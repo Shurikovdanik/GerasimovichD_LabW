@@ -1,6 +1,13 @@
 #include <iostream>
 #include <ctime>
-using namespace std;
+double mod (double a)
+{
+    if (a < 0)
+    {
+        a -= 2 * a;
+    }
+    return a;
+}
 bool CHECK_INPUT (double x)
 {
  return (x > -1 && x < 1);   
@@ -32,32 +39,33 @@ int main ()
     int k;
     double x;
     float eps;
+    std::cout << "1/(1 + x)^3" << std::endl;
     std::cout << "x: ";
     std::cin >> x;
     if (CHECK_INPUT ( x))
     {
-    std::cout << endl << "k: ";
+    std::cout << std::endl << "k: ";
     std::cin >> k;
-    if (CHECK_input_paw) {
+    if (CHECK_input_paw(k)) {
     eps = rand () % int(n_paw(10, k / 2)) + 1;
     eps = eps / n_paw(10, 2 * k);
     double part, res;
     res = 0;
     part = 1;
     int i = 2;
-    while (part > eps ) {
+    while (mod(part) > eps ) {
       
        if (i % 2 == 0)
        res += part;
        else res -= part;
-       i++;
        part = part * (i + 1) / (i - 1) * x;
+        i++;
 
     }
-    std::cout << endl << "result is: " << res;
+    std::cout << std::endl << "result is: " << res;
     }
-    else std::cout << endl << "Wrong input.";
+    else std::cout << std::endl << "Wrong input.";
     }
-    else std::cout << endl << "Wrong input.";
+    else std::cout << std::endl << "Wrong input.";
 
 }
