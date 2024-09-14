@@ -5,9 +5,13 @@ bool CHECK_INPUT (double x)
 {
  return (x > -1 && x < 1);   
 }
+bool CHECK_input_paw (int a)
+{
+    return (a >= 0);
+}
 double n_paw (double a, int b)
 {
-    if (b != 0)
+    if (b > 0)
     {
     long long res = a;
     for (int i = 0; i < b; i++)
@@ -16,7 +20,11 @@ double n_paw (double a, int b)
     }
     return res;
     }
-    else return 1;
+    else if (b == 0) 
+    {
+        return 1;
+    }
+    else return -1;
 }
 int main ()
 {
@@ -24,12 +32,13 @@ int main ()
     int k;
     double x;
     float eps;
-    cout << "x: ";
-    cin >> x;
+    std::cout << "x: ";
+    std::cin >> x;
     if (CHECK_INPUT ( x))
     {
-    cout << endl << "k: ";
-    cin >> k;
+    std::cout << endl << "k: ";
+    std::cin >> k;
+    if (CHECK_input_paw) {
     eps = rand () % int(n_paw(10, k / 2)) + 1;
     eps = eps / n_paw(10, 2 * k);
     double part, res;
@@ -45,8 +54,10 @@ int main ()
        part = part * (i + 1) / (i - 1) * x;
 
     }
-    cout << endl << "result is: " << res;
+    std::cout << endl << "result is: " << res;
     }
-    else cout << endl << "Wrong input.";
+    else std::cout << endl << "Wrong input.";
+    }
+    else std::cout << endl << "Wrong input.";
 
 }
