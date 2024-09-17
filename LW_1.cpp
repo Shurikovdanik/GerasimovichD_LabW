@@ -1,13 +1,5 @@
 #include <iostream>
-#include <ctime>
-double mod(double a) //          |a|
-{
-    if (a < 0)
-    {
-        a -= 2 * a;
-    }
-    return a;
-}
+#include <iomanip>
 bool CHECK_INPUT(double x) // проверка аргумента функции на принадлежность области определения
 {
     return (x > -1 && x < 1);
@@ -36,10 +28,10 @@ double n_paw(double a, int b) // возведение в натуральную 
 }
 int main()
 {
-    srand(time(0));
+   
     int k;
     double x;
-    float eps;
+    long double eps;
     std::cout << "1/(1 + x)^3" << std::endl;
     std::cout << "x: ";
     std::cin >> x; // Ввод. x - аргумент функции. 10^k - ограничивает приближение сверху.
@@ -50,24 +42,22 @@ int main()
         std::cin >> k;
         if (CHECK_input_paw(k))
         {
-            eps = rand() % int(n_paw(10, k / 2)) + 1;
-            eps = eps / n_paw(10, 2 * k);
-            double part, res;
-            res = 0;   // конечный результат
+            eps = 1 / n_paw(10, k);
+             long double part, res;
+           res = 0;
             part = 1;  // текущее слагаемое. 1-ое слагаемое = 1
             int i = 2; // счётчик слагаемых. Первым изменением будет переход ко 2-ому слагаемому
-            while (mod(part) > eps)
+            while (part > eps || part < -1 * eps)
             { // пока часть по модулю не станет меньше ограничения,к конечному результату прибавляется слагаемое, которое затем изменяется
-
-                if (i % 2 == 0)
-                    res += part;
-                else
-                    res -= part;
-                part = part * (i + 1) / (i - 1) * x;
+              res += part;
+                part = part * (i + 1) / (i - 1) * x * -1;
                 i++;
             }
-            std::cout << std::endl
-                      << "result is: " << res; // вывод
+            if (k <= 15)
+            std::cout << std::setprecision(k); // Задана точность в k цифр
+            else 
+            std::cout << std::setprecision(15); // Задана точность в 15 цифр (предел long double)
+            std::cout << std::endl << "result is: " << res;  // вывод
         }
         else
             std::cout << std::endl
