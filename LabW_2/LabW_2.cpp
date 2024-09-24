@@ -5,14 +5,14 @@ void Input(double *a, int num) // функция ввода значений в 
 {
     bool isAuto;
     std::cout << std::endl
-              << "0 to manually fill massive, 1 to fill it with random numbers: ";
+              << "0 to manually fill array, 1 to fill it with random numbers: ";
     std::cin >> isAuto;
     if (isAuto) // Генерация случайных чисел (в описанных пределах. До 3 знаков после запятой включительно)
     {
         srand(static_cast<unsigned int>(time(0)));
         double min, max;
         std::cout << std::endl
-                  << "Minimal and maximal possible numbers: ";
+                  << "Minimum and maximum possible numbers: ";
         std::cin >> min >> max;
         for (int i = 0; i < num; i++)
         {
@@ -145,13 +145,13 @@ void sortByNumberOfSame(double *a, int num) // Сортировка массив
 int main()
 {
     int numberOfElements;
-    std::cout << "How many elements does massive have? ";
+    std::cout << "How many elements does array have? ";
     std::cin >> numberOfElements;
     double *numbers = new double[numberOfElements];
     Input(numbers, numberOfElements);
     int m = searchForTheBiggest(numbers, numberOfElements, 1);
     std::cout << std::endl
-              << numbers[m] << " by number " << m << " is the biggest one by modulo." << std::endl;
+              << numbers[m] << " by number " << m << " is the largest number modulo." << std::endl;
     int start, finish;
     start = searchForMoreThanZero(numbers, numberOfElements, 0);
     if (start != -1)
@@ -172,6 +172,6 @@ int main()
     }
     sortByNumberOfSame(numbers, numberOfElements);
     std::cout << std::endl
-              << "Sorted massive is: ";
+              << "Sorted array is: ";
     ccout(numbers, numberOfElements);
 }
