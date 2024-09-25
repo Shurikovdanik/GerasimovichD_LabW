@@ -74,9 +74,9 @@ void sort(double **a, int height) //сортировка матрицы таки
     std::cout << std::endl;
     for (int i = 0; i < height; i++) // номер на главной диагонали
     {
-        for (int j = 0; j < height; j++) // столбец
+        for (int j = 0; j < height; j++) // строка
         {
-            for (int k = 0; k < height; k++) // строка
+            for (int k = 0; k < height; k++) // столбец
             {
                 if (a[i][i] < a[j][k] && ((j != k) || (j > i)))
                 {
