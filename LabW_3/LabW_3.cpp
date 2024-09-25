@@ -45,12 +45,15 @@ bool input(double **a, int height) //ввод значений в матрицу
     }
     else
     {
-        for (int i = 0; i < height; i++)
+        for (int i = height - 1; i > 0; i++)
         { // ручной ввод с консоли
-            for (int j = 0; j < height; j++)
+            for (int j = 0; j < i; j++)
             {
                 std::cin >> a[i][j];
+                a[j][i] = a[i][j];
+                std::cout << "/t";
             }
+            std::cout << std::endl;
         }
     }
     if (!checkInput(a, height))
