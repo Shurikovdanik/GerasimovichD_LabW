@@ -47,7 +47,7 @@ bool input(double **a, int height) //ввод значений в матрицу
     {
         for (int i = height - 1; i > 0; i++)
         { // ручной ввод с консоли
-            for (int j = 0; j < i; j++)
+            for (int j = 0; j <= i; j++)
             {
                 std::cin >> a[i][j];
                 a[j][i] = a[i][j];
