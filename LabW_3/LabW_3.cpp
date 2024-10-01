@@ -1,4 +1,5 @@
 #include <iostream>
+#include <ctime>
 bool checkInput(double **a, int height) // проверка на соблюдение условия a[i][j] = a[j][i]
 {
     bool isSuitable = 1;
