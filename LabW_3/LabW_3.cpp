@@ -48,10 +48,6 @@ bool input(double **a, int height) // ввод значений в матриц�
             std::cout << std::endl;
         }
     }
-    if (!checkInput(a, height)) {
-        std::cout << "ERROR";
-        isCorrect = 0;
-    }
     return isCorrect;
 }
 void replace(double **a, int x1, int y1, int x2, int y2) // перемена местами двух значений в матрице с соблюдением условия a[i][j] = a[j][i]
