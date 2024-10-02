@@ -6,6 +6,7 @@ bool checkInput(double **a, int height) // проверка на соблюде�
         for (int j = 0; j < height; j++) {
             if (a[i][j] - a[j][i] < -0.0001 || a[i][j] - a[j][i] > 0.0001) {
                 isSuitable = 0;
+                break;
             }
         }
     }
