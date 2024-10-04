@@ -12,6 +12,10 @@ bool checkInput(double **a, int height) // проверка на соблюде�
     }
     return isSuitable;
 }
+template <typename in>
+bool isCorrectInput (in input, in upperLimit, in lowerLimit) { //проверка на попадание значения в отрезок от lowerLimit до upperLimit
+    return (input <= upperLimit && input >= lowerLimit);
+}
 bool input(double **a, int height) // ввод значений в матрицу height x height. Возвращает 0 <=> введённые с консоли значения не подпадаю под условие a[i][j] = a[j][i]
 {
     bool isAuto, isCorrect;
@@ -70,7 +74,7 @@ void sort(double **a, int height) // сортировка матрицы так�
         }
     }
 }
-void cout(double **a, int height) // вывод матрицы на консоль
+void cout(double **a,const int height) // вывод матрицы на консоль
 {
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < height; j++) {
@@ -105,10 +109,13 @@ int search(double **a, int height) // поиск первой строки с т
 }
 int main()
 {
+    const int MAX_HEIGHT = 10;
+    const int MIN_HEIGHT = 1;
     int height;
     std::cout << "Height of array: ";
     std::cin >> height;
     std::cout << std::endl;
+    if (isCorrectInput(height, MAX_HEIGHT, MIN_HEIGHT)) {
     double **numbers = new double *[height];
     for (int i = 0; i < height; i++) {
         numbers[i] = new double[height];
@@ -123,4 +130,6 @@ int main()
         sort(numbers, height);
         cout(numbers, height);
     }
+     }
+     else std::cout << "ERROR. Wrong input";
 }
