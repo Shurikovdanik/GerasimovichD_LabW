@@ -4,7 +4,7 @@
 #include "headers\frac.h"
 reals::frac cin();
 int main () {
-reals::frac frac1 = cin ();
+reals::frac frac1 = cin (); 
 std::cout << std::endl << "Second frac: " << std::endl;
 reals::frac frac2 = cin ();
 std::cout << "Sum is: ";
@@ -14,7 +14,7 @@ frac1.multiply(frac2).output();
 std::cout << ". Devided is: ";
 frac1.devide(frac2).output();
 }
-reals::frac cin () 
+reals::frac cin () // функция ввода объукта класса frac с клавиатуры
 {
     int num;
     unsigned int denom;
