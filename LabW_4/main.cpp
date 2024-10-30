@@ -82,17 +82,12 @@ int numberOfDates(char *string, int num) //Подсчёт количества �
 }
 char *_strchr(char *string, int c) // Поиск первого вхождения символа с в строку string
 {
-    int res = -1;
     for (int i = 0; i <= sizeof(string) / sizeof(string[0]); i++) {
         if (string[i] == c) {
-            res = i;
-            break;
+           return &string[i];
         }
     }
-    if (res == -1) {
-        return NULL;
-    }
-    return &string[res];
+    return NULL;
 }
 void ccout(char *a, int num) // вывод строки а
 {

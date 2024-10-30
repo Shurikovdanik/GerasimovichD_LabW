@@ -6,11 +6,15 @@ void fin (std::vector <std::string> &someStrings, std::string filename)
 {
 std::ifstream fin;
     fin.open (filename);
-    std::string string;
      if (fin.is_open()) {
-        while (getline (fin, string)) {
-           someStrings.push_back(string);
-        }
+        const int max = 300;    
+    char buffer[max];
+    std::string string;      
+    while (fin)     
+    {
+        fin.getline(buffer, max);
+        someStrings.push_back(buffer); 
+    }
     }
     fin.close();
 }
