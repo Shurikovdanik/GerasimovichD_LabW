@@ -7,7 +7,7 @@ void fin (std::vector <std::string> &someStrings, std::string filename)
 std::ifstream fin;
     fin.open (filename);
      if (fin.is_open()) {
-        const int max = 80;    
+        const int max = 250;    
     char buffer[max];
     std::string string;      
     while (fin)     
