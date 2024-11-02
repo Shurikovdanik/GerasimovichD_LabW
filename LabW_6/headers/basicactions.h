@@ -3,9 +3,9 @@
 #include <fstream>
 #include <string>
 #include <vector>
-namespace input { //ввод
+namespace input {
     template <typename some>
-    void fin (some* array,  std::string filename) { // Обобщённый ввод динамического массива с файла (приписка в конец)
+    void fin (some array,  std::string filename) {
         std::ifstream fin;
     fin.open (filename);
     some string;
@@ -19,7 +19,7 @@ namespace input { //ввод
     fin.close();
     }
     template <typename some>
-   void finVector (std::vector <some&> array,  std::string filename) //Обобщённый ввод вектора с файла(приписка в конец)
+   void finVector (std::vector <some&> array,  std::string filename)
 {
    std::ifstream fin;
     fin.open (filename);
@@ -32,7 +32,7 @@ namespace input { //ввод
     fin.close();
 }
     template <typename some>
-    void cin (some* array, int num) { //Обобщённый ввод массива с клавиатуры(приписка в конец)
+    void cin (some* array, int num) {
 for (int i = sizeof(array) + 1; i < num + sizeof(array) + 1; i++) {
 unsigned long long size = 0;
     array = (int*)realloc(array, sizeof(int) * (++size));
@@ -40,7 +40,7 @@ unsigned long long size = 0;
 }
 }
     template <typename some>
-    void cinVector (std::vector <some&> &array, int num) { //Обобщённый клавиатурный ввод вектора (приписка в конец)
+    void cinVector (std::vector <some&> &array, int num) {
         for (int i = sizeof(array) + 1; i < num + sizeof(array) + 1; i++) {
 unsigned long long size = 0;
     some temp;
@@ -49,7 +49,7 @@ unsigned long long size = 0;
 }
     }
     template <typename some>
-    void rand (some array, some& lowLimit, some& upLimit, int num) { //Случайная генерация обобщённого вектора в заданном диапозоне
+    void rand (some array, some& lowLimit, some& upLimit, int num) {
         for (int i = sizeof(array) + 1; i < num + sizeof(array) + 1; i++) {
         some temp;
         temp = rand () % (upLimit - lowLimit) + lowLimit;
@@ -59,7 +59,7 @@ unsigned long long size = 0;
     }
     
    template <typename some>
-    void randVector (std::vector <some&> &array,  some& lowLimit, some& upLimit, int num) { //Случайная генерация обобщённого вектора в заданном диапозоне
+    void randVector (std::vector <some&> &array,  some& lowLimit, some& upLimit, int num) {
  for (int i = sizeof(array) + 1; i < num + sizeof(array) + 1; i++) {
         some temp;
         temp = rand () % (upLimit - lowLimit) + lowLimit;
@@ -67,21 +67,21 @@ unsigned long long size = 0;
     }
     }
 }
-namespace output { //вывод 
+namespace output {
     template <typename some>
-    void fout (some* array,  std::string filename) { //вывод в файл
+    void fout (some array,  std::string filename) {
         std::ofstream fout;
     fout.open (filename);
     some string;
      if (fout.is_open()) {
-        for (int i = 0; i < sizeof(array) / sizepf(array[0]); i++) {
+        for (int i = 0; i < sizeof(array); i++) {
           fout << arrai[i] << "\t";
         }
     }
     fout.close();
     }
     template <typename some>
-    void foutVector (std::vector <some&> &array,  std::string filename) { //вывод вуктора в файл
+    void foutVector (std::vector <some&> &array,  std::string filename) {
          std::ofstream fout;
     fout.open (filename);
     some string;
@@ -93,14 +93,14 @@ namespace output { //вывод
     fout.close();
     }
     template <typename some>
-    void cout (some array*, int num) { //вывод массива на консоль
+    void cout (some array, int num) {
         for (int i = 0; i < sizeof(array) + 1; i++)
         {
             std::cout << array[i] << "\t";
         }
     }
     template <typename some>
-    void coutVector (std::vector <some&> &array, int num) { //вывод вектора на консоль
+    void coutVector (std::vector <some&> &array, int num) {
     for (int i = 0; i < array.size(); i++)
         {
             std::cout << array[i] << "\t";
@@ -108,8 +108,8 @@ namespace output { //вывод
     }
 }
 namespace fromFileAriphmetics {
-    int size (std::string filename); //размер массива из файла
+    int size (std::string filename);
 }
 namespace ariphmetics {
-    unsigned int gcd (unsigned int first,unsigned int second); //НОД двух натуральных французских
+    unsigned int gcd (unsigned int first,unsigned int second);
 }
