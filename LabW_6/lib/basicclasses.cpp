@@ -35,7 +35,10 @@
  }
  void reals::frac::output () 
  {
-   std::cout << numerator << "/" << denominator;
+  if (numerator / denominator != 0) {
+   std::cout << numerator / denominator << " and " <<numerator % denominator << "/" << denominator;
+  }
+  else std::cout << numerator << "/" << denominator;
  }
 reals::frac reduction (reals::frac given)
 {
@@ -59,9 +62,32 @@ reals::frac reduction (reals::frac given)
     }
     return given;
 }
+
 unsigned int toOneDenom (reals::frac first, reals::frac second) {
     unsigned int denom1 = first.getDenominator();
     unsigned int denom2 = second.getDenominator();
     unsigned int denomCommon = denom1 * denom2 / ariphmetics::gcd(denom1, denom2);
     return denomCommon;
+}
+reals::frac cin () 
+{
+    int num;
+    unsigned int denom;
+    std::cout << "Enter frac: ";
+    std::cin >> num >> denom;
+    reals::frac res (num, denom);
+    std::cout << std::endl;
+    return res;
+}
+reals::frac reals::frac::operator +(frac add) {
+  reals::frac temp(numerator, denominator);
+  return temp.sum(add);
+}
+reals::frac reals::frac:: operator * (frac mult) {
+ reals::frac temp(numerator, denominator);
+  return temp.multiply(mult);
+}
+reals::frac reals::frac:: operator /(frac div) {
+ reals::frac temp(numerator, denominator);
+  return temp.devide(div);
 }

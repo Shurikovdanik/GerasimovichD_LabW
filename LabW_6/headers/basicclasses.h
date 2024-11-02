@@ -16,7 +16,11 @@ namespace reals {
         void output ();
         unsigned int getDenominator();
         int getNumerator();
+        frac operator +(frac add);
+        frac operator * (frac decr);
+        frac operator /(frac div);
     };
 }
 reals::frac reduction (reals::frac given);
 unsigned toOneDenom (reals::frac first, reals::frac second);
+reals::frac cin();
