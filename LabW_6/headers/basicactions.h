@@ -3,53 +3,10 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <array>
 namespace input {
-    template <typename some>
-    void fin (some array,  std::string filename) {
-        std::ifstream fin;
-    fin.open (filename);
-    some string;
-    unsigned long long size = 0;
-     if (fin.is_open()) {
-        while (fin >> string) {
-          array = (int*)realloc(array, sizeof(int) * (++size));
-          array[i] = string;
-        }
-    }
-    fin.close();
-    }
-    template <typename some>
-   void finVector (std::vector <some&> array,  std::string filename)
-{
-   std::ifstream fin;
-    fin.open (filename);
-    std::string string;
-     if (fin.is_open()) {
-        while (fin >> string) {
-           array.push_back(string);
-        }
-    }
-    fin.close();
-}
-    template <typename some>
-    void cin (some* array, int num) {
-for (int i = sizeof(array) + 1; i < num + sizeof(array) + 1; i++) {
-unsigned long long size = 0;
-    array = (int*)realloc(array, sizeof(int) * (++size));
-    std::cin >> array[i];
-}
-}
-    template <typename some>
-    void cinVector (std::vector <some&> &array, int num) {
-        for (int i = sizeof(array) + 1; i < num + sizeof(array) + 1; i++) {
-unsigned long long size = 0;
-    some temp;
-    std::cin >> temp;
-    array.push_back(temp);
-}
-    }
-    template <typename some>
-    void rand (some array, some& lowLimit, some& upLimit, int num) {
+    template <typename T>
+    void rand (T *array, T& lowLimit, T& upLimit, int num) {
         for (int i = sizeof(array) + 1; i < num + sizeof(array) + 1; i++) {
         some temp;
         temp = rand () % (upLimit - lowLimit) + lowLimit;
@@ -57,9 +14,8 @@ unsigned long long size = 0;
      a[i] = temp;
     }
     }
-    
-   template <typename some>
-    void randVector (std::vector <some&> &array,  some& lowLimit, some& upLimit, int num) {
+   template <typename T>
+    void randVector (std::vector <T&> &array,  T& lowLimit, T& upLimit, int num) {
  for (int i = sizeof(array) + 1; i < num + sizeof(array) + 1; i++) {
         some temp;
         temp = rand () % (upLimit - lowLimit) + lowLimit;
@@ -68,43 +24,31 @@ unsigned long long size = 0;
     }
 }
 namespace output {
-    template <typename some>
-    void fout (some array,  std::string filename) {
-        std::ofstream fout;
-    fout.open (filename);
-    some string;
-     if (fout.is_open()) {
-        for (int i = 0; i < sizeof(array); i++) {
-          fout << arrai[i] << "\t";
+}
+namespace arrayAriphmetics {
+    template <typename T>
+    T sumOfVector (std::vector <T> &vector) {
+        T res = vector[0];
+        for (int i = 1; i < vector.size();i++) {
+            res += vector[i];
         }
+        return res;
     }
-    fout.close();
-    }
-    template <typename some>
-    void foutVector (std::vector <some&> &array,  std::string filename) {
-         std::ofstream fout;
-    fout.open (filename);
-    some string;
-     if (fout.is_open()) {
-        for (int i = 0; i < array.size(); i++) {
-          fout << arrai[i] << "\t";
+    template <typename T>
+     T sumOfArray (T *array) {
+        T res = array[0];
+        for (int i = 1; i < sizeof(array) / sizeof(array[0]);i++) {
+            res += vector[i];
         }
+        return res;
     }
-    fout.close();
-    }
-    template <typename some>
-    void cout (some array, int num) {
-        for (int i = 0; i < sizeof(array) + 1; i++)
-        {
-            std::cout << array[i] << "\t";
+    template <typename T, size_t num>
+     T sumOfArray (std::array <T, num> array) {
+        T res = array[0];
+        for (int i = 1; i < num;i++) {
+            res += array[i];
         }
-    }
-    template <typename some>
-    void coutVector (std::vector <some&> &array, int num) {
-    for (int i = 0; i < array.size(); i++)
-        {
-            std::cout << array[i] << "\t";
-        }
+        return res;
     }
 }
 namespace fromFileAriphmetics {
@@ -113,3 +57,4 @@ namespace fromFileAriphmetics {
 namespace ariphmetics {
     unsigned int gcd (unsigned int first,unsigned int second);
 }
+//TODO: переделать
