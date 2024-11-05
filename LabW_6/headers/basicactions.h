@@ -44,6 +44,12 @@ namespace output {
             stream << array[i];
         }
     }
+    template <typename T>
+    void streamOutputArray (T* array, std::ostream &stream) {
+        for (int i = 0; i < sizeof(array) / sizeof(array[0]); i++) {
+            stream << array[i];
+        }
+    }
 }
 namespace arrayAriphmetics {
     template <typename T>

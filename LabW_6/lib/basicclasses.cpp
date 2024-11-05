@@ -1,48 +1,53 @@
 #include <iostream>
 #include "..\headers\basicclasses.h"
 #include "..\headers\basicactions.h"
- void reals::frac::getFrac (int num,unsigned int denom)
+ void rationals::frac::getFrac (int num,unsigned int denom)
  {
     numerator = num;
     denominator = denom;
  }
- unsigned int reals::frac::getDenominator() 
+ unsigned int rationals::frac::getDenominator() 
  {
     return denominator;
  }
-  int reals::frac::getNumerator() 
+  int rationals::frac::getNumerator() 
   {
     return numerator;
  }
- reals::frac reals::frac::sum (reals::frac summand2)
+ void  rationals::frac::setNumerator(int given) {
+    numerator = given;
+ }
+  void  rationals::frac::setDenominator(unsigned int given) {
+    denominator = given;
+  }
+ rationals::frac rationals::frac::sum (rationals::frac summand2)
  {
-   reals::frac summand1 (numerator, denominator);
+   rationals::frac summand1 (numerator, denominator);
    unsigned int denomCommon = toOneDenom (summand1, summand2);
    int num1 = numerator * (denomCommon / denominator);
    int num2 = summand2.getNumerator() * denomCommon / summand2.getDenominator();
-   reals::frac summa (num1 + num2, denomCommon);
+   rationals::frac summa (num1 + num2, denomCommon);
    return reduction (summa);
  }
- reals::frac reals::frac::multiply (reals::frac multiplier) 
+ rationals::frac rationals::frac::multiply (rationals::frac multiplier) 
  {
-   reals::frac production (numerator * multiplier.getNumerator(), denominator * multiplier.getDenominator());
+   rationals::frac production (numerator * multiplier.getNumerator(), denominator * multiplier.getDenominator());
    return reduction (production);
  }
- reals::frac reals::frac::devide (reals::frac devider)
+ rationals::frac rationals::frac::devide (rationals::frac devider)
  {
-   reals::frac devided (numerator * devider.getDenominator(), denominator * devider.getNumerator());
+   rationals::frac devided (numerator * devider.getDenominator(), denominator * devider.getNumerator());
     return reduction (devided);
  }
- void reals::frac::output () 
+ void rationals::frac::output () 
  {
   if (numerator / denominator != 0) {
    std::cout << numerator / denominator << " and " <<numerator % denominator << "/" << denominator;
   }
   else std::cout << numerator << "/" << denominator;
  }
-reals::frac reduction (reals::frac given)
+rationals::frac reduction (rationals::frac given)
 {
-    
     if ( given.getNumerator() > 0) {
     unsigned int num = (unsigned int)given.getNumerator();
     unsigned int denom = given.getDenominator();
@@ -52,42 +57,79 @@ reals::frac reduction (reals::frac given)
     given.getFrac(num, denom);
     }
     else {
-       unsigned int num = -1 * given.getNumerator();
-    unsigned int denom = given.getDenominator();
+    rationals::frac temp (given.getNumerator() * -1, given.getDenominator());
+    unsigned int num = temp.getNumerator();
+    unsigned int denom = temp.getDenominator();
     unsigned int gcd = ariphmetics::gcd(num, denom);
     num /= gcd;
-    num *= -1;
-    denom /= gcd;  
-    given.getFrac(num, denom);
+    denom /= gcd;
+    given.getFrac(-num, denom);
     }
     return given;
 }
 
-unsigned int toOneDenom (reals::frac first, reals::frac second) {
+unsigned int toOneDenom (rationals::frac first, rationals::frac second) {
     unsigned int denom1 = first.getDenominator();
     unsigned int denom2 = second.getDenominator();
     unsigned int denomCommon = denom1 * denom2 / ariphmetics::gcd(denom1, denom2);
     return denomCommon;
 }
-reals::frac cin () 
+rationals::frac cin () 
 {
     int num;
     unsigned int denom;
     std::cout << "Enter frac: ";
     std::cin >> num >> denom;
-    reals::frac res (num, denom);
+    rationals::frac res (num, denom);
     std::cout << std::endl;
     return res;
 }
-reals::frac reals::frac::operator +(frac add) {
-  reals::frac temp(numerator, denominator);
+rationals::frac rationals::frac::operator +(frac add) {
+  rationals::frac temp(numerator, denominator);
   return temp.sum(add);
 }
-reals::frac reals::frac:: operator * (frac mult) {
- reals::frac temp(numerator, denominator);
+rationals::frac rationals::frac::operator -(frac decr) {
+  rationals::frac temp(numerator, denominator);
+  return (decr *(-1) + temp);
+}
+rationals::frac rationals::frac:: operator * (frac mult) {
+ rationals::frac temp(numerator, denominator);
   return temp.multiply(mult);
 }
-reals::frac reals::frac:: operator /(frac div) {
- reals::frac temp(numerator, denominator);
+rationals::frac rationals::frac:: operator * (int mult)  {
+  rationals::frac temp(numerator * mult, denominator);
+  return  reduction(temp);
+}
+rationals::frac rationals::frac:: operator /(rationals::frac div) {
+ rationals::frac temp(numerator, denominator);
   return temp.devide(div);
+}
+std::ostream& rationals::operator << (std::ostream &stream, rationals::frac given) {
+  if (given.getNumerator() / given.getDenominator() != 0) {
+    if (given.getNumerator() % given.getDenominator() != 0) {
+   stream << given.getNumerator() / given.getDenominator() << " and " << given.getNumerator() % given.getDenominator() << "/" << given.getDenominator();
+    }
+    else stream <<given.getNumerator() / given.getDenominator();
+  }
+  else stream << given.getNumerator() << "/" << given.getDenominator();
+  return stream;
+}
+void rationals::operator >> (std::istream &stream, rationals::frac &given) {
+  int num;
+  unsigned int denom;
+  stream >> num >> denom;
+  given.setNumerator(num);
+  given.setDenominator(denom);
+}
+bool rationals::frac::operator >(rationals::frac other) {
+  return (numerator * other.getDenominator() > denominator * other.getNumerator());
+}
+bool rationals::frac::operator <(rationals::frac other) {
+  return (numerator * other.getDenominator() > denominator * other.getNumerator());
+}
+bool rationals::frac::operator >(int other) {
+  return (numerator > other * denominator);
+}
+bool rationals::frac::operator <(int other) {
+  return (numerator < other * denominator);
 }
