@@ -6,6 +6,20 @@
 #include <array>
 namespace input {
     template <typename T>
+    void streamInputVector (std::vector <T> &array, std::istream &stream) {
+        T temp;
+        while (stream >> temp) {
+            array.push_back(temp);
+        }
+    }
+    template <typename T>
+    void streamInputArray (T* array, std::istream &stream) {
+        T temp;
+        while (stream >> temp) {
+        array = realloc(array, sizeof(array) + sizeof(T));    
+        }
+    }
+    template <typename T>
     void rand (T *array, T& lowLimit, T& upLimit, int num) {
         for (int i = sizeof(array) + 1; i < num + sizeof(array) + 1; i++) {
         some temp;
@@ -24,6 +38,12 @@ namespace input {
     }
 }
 namespace output {
+    template <typename T>
+    void streamOutputVector (std::vector <T> &array, std::ostream &stream) {
+        for (int i = 0; i < array.size(); i++) {
+            stream << array[i];
+        }
+    }
 }
 namespace arrayAriphmetics {
     template <typename T>
