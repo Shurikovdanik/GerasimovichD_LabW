@@ -42,7 +42,7 @@
  void rationals::frac::output () 
  {
   if (numerator / denominator != 0) {
-   std::cout << numerator / denominator << " and " <<numerator % denominator << "/" << denominator;
+   std::cout << (int)(numerator / (int)denominator) << " and " <<(int)(numerator % (int)denominator) << "/" << denominator;
   }
   else std::cout << numerator << "/" << denominator;
  }
@@ -57,7 +57,7 @@ rationals::frac reduction (rationals::frac given)
     given.getFrac(num, denom);
     }
     else {
-    rationals::frac temp (given.getNumerator() * -1, given.getDenominator());
+    rationals::frac temp (given.getNumerator() * (-1), given.getDenominator());
     unsigned int num = temp.getNumerator();
     unsigned int denom = temp.getDenominator();
     unsigned int gcd = ariphmetics::gcd(num, denom);
@@ -90,7 +90,13 @@ rationals::frac rationals::frac::operator +(frac add) {
 }
 rationals::frac rationals::frac::operator -(frac decr) {
   rationals::frac temp(numerator, denominator);
+  if (numerator * decr.getDenominator() - denominator * decr.getNumerator() != 0) {
   return (decr *(-1) + temp);
+  }
+  else {
+    rationals::frac res(0,1);
+    return res;
+  }
 }
 rationals::frac rationals::frac:: operator * (frac mult) {
  rationals::frac temp(numerator, denominator);
@@ -105,21 +111,25 @@ rationals::frac rationals::frac:: operator /(rationals::frac div) {
   return temp.devide(div);
 }
 std::ostream& rationals::operator << (std::ostream &stream, rationals::frac given) {
-  if (given.getNumerator() / given.getDenominator() != 0) {
-    if (given.getNumerator() % given.getDenominator() != 0) {
-   stream << given.getNumerator() / given.getDenominator() << " and " << given.getNumerator() % given.getDenominator() << "/" << given.getDenominator();
+  if (given.getNumerator() /(int) given.getDenominator() != 0 || given.getNumerator() != 0) {
+    if (given.getNumerator() / (int)given.getDenominator() != 0) {
+    if (given.getNumerator() % (int)given.getDenominator() != 0) {
+   stream << (int)(given.getNumerator() / (int)given.getDenominator()) << " and " << given.getNumerator() % (int)given.getDenominator() << "/" << given.getDenominator();
     }
-    else stream <<given.getNumerator() / given.getDenominator();
+    else stream <<given.getNumerator() / (int)given.getDenominator();
+    }
+  else stream << given.getNumerator() << "/" << (int)given.getDenominator();
   }
-  else stream << given.getNumerator() << "/" << given.getDenominator();
+  else stream << 0;
   return stream;
 }
-void rationals::operator >> (std::istream &stream, rationals::frac &given) {
+std::istream& rationals::operator >> (std::istream &stream, rationals::frac &given) {
   int num;
   unsigned int denom;
   stream >> num >> denom;
   given.setNumerator(num);
   given.setDenominator(denom);
+  return stream;
 }
 bool rationals::frac::operator >(rationals::frac other) {
   return (numerator * other.getDenominator() > denominator * other.getNumerator());

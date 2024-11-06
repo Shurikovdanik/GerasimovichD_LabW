@@ -29,7 +29,7 @@ namespace rationals {
         bool operator <(int other);
     };
     std::ostream& operator << (std::ostream &stream, const frac given);
-    void operator >> (std::istream &stream, rationals::frac &given);
+    std::istream& operator >> (std::istream &stream, rationals::frac &given);
 }
 rationals::frac reduction (rationals::frac given);
 unsigned toOneDenom (rationals::frac first, rationals::frac second);
