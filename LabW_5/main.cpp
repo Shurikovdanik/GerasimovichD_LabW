@@ -4,7 +4,7 @@
 #include <vector>
 void fin (std::vector <std::string> &someStrings, std::string filename)
 {
-std::ifstream fin;
+std::ifstream fin; //Ввод из файла
     fin.open (filename);
      if (fin.is_open()) {
         const int max = 300;    
@@ -18,7 +18,7 @@ std::ifstream fin;
     }
     fin.close();
 }
-bool isSame (std::string first, std::string second)
+bool isSame (std::string first, std::string second) //проверка на одинаковость
 {
     if (first.size() == second.size()) {
         bool isSame = 1;
@@ -33,7 +33,7 @@ bool isSame (std::string first, std::string second)
     }
     else return 0;
 }
-int numberOfSame (std::vector <std::string> &someStrings, int begin, int num)
+int numberOfSame (std::vector <std::string> &someStrings, int begin, int num) //подсчёт числа подряд одинаковых
 {
     bool isOver = 0;
     int res = 1;
@@ -48,7 +48,7 @@ int numberOfSame (std::vector <std::string> &someStrings, int begin, int num)
     }
     return res;
 }
-void fout (std::vector <std::string> &someStrings, int num)
+void fout (std::vector <std::string> &someStrings, int num) //вывод в файл
 {
     std::ofstream fout;
     std::cout <<std::endl << "Name of output file: ";
