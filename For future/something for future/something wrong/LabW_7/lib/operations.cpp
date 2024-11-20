@@ -39,11 +39,27 @@ given[i] << std::cout;
 }
 std::vector <student::studentBeginner> file::fin (char* fileName) {
   std::vector <student::studentBeginner> res;
-  std::stringstream tempStream = input::finStreamString(fileName);
-  unsigned int num;
-  tempStream >> num;
-    for (int i = 0; i < num; i++) {
-      student::studentBeginner temp = inputSt::generate(tempStream);
+  std::vector <std::string> someStrings;
+  std::ifstream fin;
+  fin.open (fileName);
+     if (fin.is_open()) {
+        const int max = 300;    
+    char buffer[max];
+    std::string string; 
+    while (fin)     
+    {
+        fin.getline(buffer, max);
+        someStrings.push_back(buffer); 
+    }
+    }
+    fin.close();
+    for (int i = 0; i < someStrings.size(); i++) {
+      std::stringstream stream{someStrings[i]};
+      student::studentBeginner temp(0,0,0,0);
+      if (hasSameID(res, temp)) {
+    i--;
+    }
+      temp >> stream;
       res.push_back(temp);
     }
     return res;
@@ -114,11 +130,10 @@ std::cout << "Enter name, form, group, cardID";
 student::studentBeginner inputSt::generate(std::istream &inputStream) {
   std::string name;
       inputStream >> name;
-      char* nameRes = new char(name.end() - name.begin() + 1);
+      char* nameRes = new char(name.end() - name.begin());
       for (int i = 0; i < name.end() - name.begin(); i++) {
         nameRes[i] = name[i];
       }
-      nameRes[name.end() - name.begin()] = NULL;
    char form;
    unsigned int group;
    unsigned int cardID;

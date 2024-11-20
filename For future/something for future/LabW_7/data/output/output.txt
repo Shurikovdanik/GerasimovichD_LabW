@@ -1,0 +1,7 @@
+ID: 31323, name: Abraam, form: 1, group: 4, card ID: 11334455, 1st session marks: 1 1 1 1 . 2nd session marks: 1 2 3 4 5 
+ 1 2
+ID: 30334, name: Sergey, form: 1, group: 4, card ID: 11223345, 1st session marks: 2 2 2 2 . 2nd session marks: 5 4 3 2 1 
+ 2 2
+ID: 17674, name: Milan, form: 2, group: 4, card ID: 11426834, 1st session marks: 3 3 3 3 . 2nd session marks: 3 3 3 3 3 
+ 3 3
+2 2.55556

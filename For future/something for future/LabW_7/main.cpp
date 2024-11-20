@@ -6,5 +6,6 @@
 #include "include\app.h"
 int main(){
     application::app app;
-    return app.main();
+    return app.fileApp();
+    //TODO: save to 4 files, documentation, example, try hwnd, smth with *this
 }

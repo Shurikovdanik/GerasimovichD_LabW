@@ -7,5 +7,5 @@ const unsigned int LENGTH_OF_FILENAME_MARKS = 10;
 namespace fileManage {
     int load(char* inputFileName, char* outputFileName);
     int save (std::vector <student::studentAfterSecondSession> &given, char* saveFileName);
-    int toDirectory (char* fileName, char * directoryName);
+    std::string toDirectory (std::string fileName, std::string &directoryName);
 }

@@ -3,10 +3,11 @@
 #include "..\include\operations.h"
 #include "..\include\classes.h"
 #include "..\include\operationsWithF&SSt.h"
+#include "..\include\fileManagement.h"
 namespace application {
     class app {
-        private: 
         public:
         int main();
+        int fileApp();
     };
 }

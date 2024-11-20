@@ -6,6 +6,5 @@
 #include "include\app.h"
 int main(){
     application::app app;
-    return app.fileApp();
-    //TODO: documentation, try hwnd
+    return app.main();
 }
