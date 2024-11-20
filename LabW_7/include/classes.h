@@ -41,9 +41,11 @@ namespace student {
         unsigned int getCardID();
         void operator >>(std::istream &inputStream);
         void operator <<(std::ostream &outputStream);
-        double mediumMark() const;
+        virtual double mediumMark();
         void operator = (studentBeginner other);
+        void toStream(std::ostream &stream);
     };
+    std::ostream& operator << (std::ostream &outputStream, const studentBeginner &given);
     std::istream& operator >>(std::istream &inputStream, studentBeginner &given);
     class studentAfterSession : public studentBeginner {
         private:
@@ -55,9 +57,9 @@ namespace student {
         void setMarks (std::array <unsigned int, FIRST_SESSION_NUM> marks);
         std::array <unsigned int, FIRST_SESSION_NUM> getMarks();
         void operator << (std::ostream &outputStream);
-        double mediumMark();
+        double mediumMark() override;
     };
-    //std::ostream operator << (std::ostream &outputStream, studentAfterSession &student);
+    std::ostream& operator << (std::ostream &outputStream, studentAfterSession &student);
     studentAfterSession toFSession(studentBeginner given);
     class studentAfterSecondSession : public studentAfterSession {
         private:
@@ -71,5 +73,6 @@ namespace student {
         void operator << (std::ostream &outputStream);
         double mediumMark();
     };
+    std::ostream & operator << (std::ostream & stream, student::studentAfterSecondSession student);
     studentAfterSecondSession toSSession(studentAfterSession given);
 }   

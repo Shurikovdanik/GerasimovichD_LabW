@@ -51,6 +51,15 @@ return marksSecond;
  void student::studentBeginner::operator <<(std::ostream &outputStream) {
     outputStream <<"ID: " << ID <<", name: " <<  name <<", form: " << form << ", group: "<< group <<", card ID: " << cardID << std::endl;
  }
+ void student::studentBeginner::toStream(std::ostream &stream) {
+  stream << name << "\t" << form << "\t" << group << "\t" << cardID;
+ }
+ std::ostream& operator << (std::ostream &outputStream, const student::studentBeginner &given) {
+  student::studentBeginner temp = given;
+  outputStream <<"ID: " << temp.getID() <<", name: " << temp.getName() <<", form: " << temp.getForm() << ", group: "<< temp.getGroup() <<", card ID: " << temp.getCardID();
+  outputStream << std::endl;
+  return outputStream;
+ }
  void student::studentAfterSession::operator << (std::ostream &outputStream) {
    outputStream <<"ID: " << getID() <<", name: " << getName() <<", form: " << getForm() << ", group: "<< getGroup() <<", card ID: " << getCardID() << ", 1st session marks: ";
    for (int i = 0; i < FIRST_SESSION_NUM; i++) {
@@ -58,13 +67,16 @@ return marksSecond;
    }
    outputStream << std::endl;
  }
- /*std::ostream student::operator << (std::ostream &outputStream, student::studentAfterSession &student) {
+ std::ostream& student::operator << (std::ostream &outputStream, student::studentAfterSession &student) {
   outputStream <<"ID: " << student.getID() <<", name: " << student.getName() <<", form: " << student.getForm() << ", group: "<< student.getGroup() <<", card ID: " << student.getCardID() << ", 1st session marks: ";
    for (int i = 0; i < FIRST_SESSION_NUM; i++) {
       outputStream << student.getMarks()[i] << " ";
    } 
    return outputStream;
- }*/
+ }
+  double student::studentBeginner::mediumMark() {
+    return -10;
+ }
  void student::studentAfterSecondSession::operator << (std::ostream &outputStream) {
    outputStream <<"ID: " << getID() <<", name: " << getName() <<", form: " << getForm() << ", group: "<< getGroup() <<", card ID: " << getCardID() << ", 1st session marks: ";
    std::array<unsigned int, FIRST_SESSION_NUM> tempArrray = getMarks();
@@ -76,6 +88,10 @@ return marksSecond;
     outputStream << marksSecond[i] << " ";
    }
    outputStream << std::endl;
+ }
+ std::ostream & student::operator << (std::ostream & stream, student::studentAfterSecondSession student) {
+  student << stream;
+  return stream;
  }
     double student::studentAfterSession::mediumMark() {
       return arrayAriphmetics::sumOfArray (marks) / marks.size();
