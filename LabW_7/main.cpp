@@ -7,5 +7,5 @@
 int main(){
     application::app app;
     return app.fileApp();
-    //TODO: save to 4 files, documentation, example, try hwnd, smth with *this
+    //TODO: save to 4 files, documentation, try hwnd, smth with *this
 }

@@ -6,6 +6,7 @@
 #include "..\include\ID.h"
 #include "..\include\operations.h"
 #include "..\include\operationsWithF&SSt.h"
+#include "..\include\fileManagement.h"
     std::vector <student::studentAfterSession> addMarksConsole::firstSemester (std::vector <student::studentBeginner> &array) {
         std::vector <student::studentAfterSession> res;
         std::cout << "Enter " << FIRST_SESSION_NUM << " marks of 1st session for each student. " << std::endl;
@@ -70,7 +71,9 @@
         }
         fout << middleMark::vector(studentsA) << " " << middleMark::vector(studentsB);
         }
+        fileManage::save(studentsB, "save/save.txt");
         studentsA.clear();
+        studentsB.clear();
         fout.close();
         //TODO: file management, documentation, example
         return 0;

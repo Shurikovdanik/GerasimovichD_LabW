@@ -37,7 +37,7 @@ std::stringstream input::finStreamString ( std::string fileName) {
     while (fin)     
     {
         fin.getline(buffer, MAX_BUFFER);
-        res << buffer << " ";
+        res << buffer;
     }
     }
     return res;
