@@ -7,5 +7,4 @@
 int main(){
     application::app app;
     return app.fileApp();
-    //TODO: documentation, try hwnd
 }
