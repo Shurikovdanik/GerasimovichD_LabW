@@ -30,16 +30,16 @@ namespace input {
     template <typename T>
     void rand (T *array, T& lowLimit, T& upLimit, int num) {
         for (int i = sizeof(array) + 1; i < num + sizeof(array) + 1; i++) {
-        some temp;
+        T temp;
         temp = rand () % (upLimit - lowLimit) + lowLimit;
-     array = (int*)realloc(array, sizeof(int) * (++size));
+     array = (int*)realloc(array, sizeof(int) * (++(sizeof(array) / sizeof(int))));
      a[i] = temp;
     }
     }
    template <typename T>
     void randVector (std::vector <T&> &array,  T& lowLimit, T& upLimit, int num) {
  for (int i = sizeof(array) + 1; i < num + sizeof(array) + 1; i++) {
-        some temp;
+        T temp;
         temp = rand () % (upLimit - lowLimit) + lowLimit;
     array.push_back(temp);
     }
