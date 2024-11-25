@@ -28,12 +28,12 @@ namespace input {
         }
     }
     template <typename T>
-    void rand (T *array, T& lowLimit, T& upLimit, int num) {
+    void rande (T *array, T& lowLimit, T& upLimit, int num) {
         for (int i = sizeof(array) + 1; i < num + sizeof(array) + 1; i++) {
         T temp;
         temp = rand () % (upLimit - lowLimit) + lowLimit;
      array = (int*)realloc(array, sizeof(int) * (++(sizeof(array) / sizeof(int))));
-     a[i] = temp;
+     array[i] = temp;
     }
     }
    template <typename T>
@@ -59,7 +59,7 @@ namespace arrayAriphmetics {
      T sumOfArray (T *array) {
         T res = array[0];
         for (int i = 1; i < sizeof(array) / sizeof(array[0]);i++) {
-            res += vector[i];
+            res += array[i];
         }
         return res;
     }
