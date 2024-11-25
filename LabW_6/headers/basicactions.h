@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 #include <array>
+#include <sstream>
+const unsigned int MAX_BUFFER = 300;
 namespace input {
     template <typename T>
     void streamInputVector (std::vector <T> &array, std::istream &stream) {
@@ -19,37 +21,30 @@ namespace input {
         array = realloc(array, sizeof(array) + sizeof(T));    
         }
     }
+    template <typename T, size_t num>
+    void streamInputArray(std::array <T, num> &array, std::istream &stream) {
+         for (int i = 0; i < num; i++) {
+            stream >> array[i];
+        }
+    }
     template <typename T>
-    void rand (T *array, T& lowLimit, T& upLimit, int num) {
+    void rande (T *array, T& lowLimit, T& upLimit, int num) {
         for (int i = sizeof(array) + 1; i < num + sizeof(array) + 1; i++) {
-        some temp;
+        T temp;
         temp = rand () % (upLimit - lowLimit) + lowLimit;
-     array = (int*)realloc(array, sizeof(int) * (++size));
-     a[i] = temp;
+     array = (int*)realloc(array, sizeof(int) * (++(sizeof(array) / sizeof(int))));
+     array[i] = temp;
     }
     }
    template <typename T>
     void randVector (std::vector <T&> &array,  T& lowLimit, T& upLimit, int num) {
  for (int i = sizeof(array) + 1; i < num + sizeof(array) + 1; i++) {
-        some temp;
+        T temp;
         temp = rand () % (upLimit - lowLimit) + lowLimit;
     array.push_back(temp);
     }
     }
-}
-namespace output {
-    template <typename T>
-    void streamOutputVector (std::vector <T> &array, std::ostream &stream) {
-        for (int i = 0; i < array.size(); i++) {
-            stream << array[i];
-        }
-    }
-    template <typename T>
-    void streamOutputArray (T* array, std::ostream &stream) {
-        for (int i = 0; i < sizeof(array) / sizeof(array[0]); i++) {
-            stream << array[i];
-        }
-    }
+    std::stringstream finStreamString (std::string fileName);
 }
 namespace arrayAriphmetics {
     template <typename T>
@@ -64,7 +59,7 @@ namespace arrayAriphmetics {
      T sumOfArray (T *array) {
         T res = array[0];
         for (int i = 1; i < sizeof(array) / sizeof(array[0]);i++) {
-            res += vector[i];
+            res += array[i];
         }
         return res;
     }
