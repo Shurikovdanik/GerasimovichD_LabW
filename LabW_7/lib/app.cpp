@@ -23,6 +23,6 @@ int application::app::main(){
     return 0;
 }
 int application::app::fileApp() {
-    std::cout << fileManage::load ("data/save.txt", "data/output/output.txt");
+    std::cout << fileManage::load ("data/save.txt", "data/output/output.txt"); //Выводит 0 в консоль при нормальной работе
     return 0;
 }
