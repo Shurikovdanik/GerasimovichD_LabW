@@ -8,7 +8,9 @@ const size_t SECOND_SESSION_NUM = 5;
 const unsigned int RAND_RANGE = 999999;
 const unsigned int ARRAY_LENGTH = 30;
 const unsigned int NUM_OF_ARGS = 4;
+//пространство имён Student: в нём есть классы (studentBeginner и его потомки(studentAfterFirstSession и studentAfterSecondSession)) и методы к одиночному экземпляру одного из них.
 namespace student {
+//studentBeginner - класс, описывающий студента без оценок. 
     class studentBeginner {
         private: 
         unsigned int ID;
@@ -17,14 +19,14 @@ namespace student {
         unsigned int group;
         unsigned int cardID;
         public: 
-        studentBeginner(char* name, char form, unsigned int group, unsigned int cardID) {
+        studentBeginner(char* name, char form, unsigned int group, unsigned int cardID) { //Пользовательский конструктор (ибо ID по особенному задаётся)
             this -> name = name;
             this -> form = form;
             this -> group = group;
             this -> cardID = cardID;
             this -> ID = rand () % RAND_RANGE + 1;
         }
-        studentBeginner(const studentBeginner &student) {
+        studentBeginner(const studentBeginner &student) { //Пользовательский конструктор копирования. 
             this -> name = student.name;
             this -> form = student.form;
             this -> group = student.group;
