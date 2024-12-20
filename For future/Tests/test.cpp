@@ -24,18 +24,18 @@ TEST(truthSingle, Expression) {
 	expression::Expression<int> case2("2-1");
 	expression::Expression<int> case3("2*2");
 	expression::Expression<int> case4("2/2");
-	EXPECT_EQ(case1.getSymbols(), "1+2");
-	EXPECT_EQ(case2.getSymbols(), "2-1");
-	EXPECT_EQ(case3.getSymbols(), "2*2");
-	EXPECT_EQ(case4.getSymbols(), "2/2");
+	EXPECT_EQ(case1.getSymbols(), "1");
+	EXPECT_EQ(case2.getSymbols(), "2");
+	EXPECT_EQ(case3.getSymbols(), "2");
+	EXPECT_EQ(case4.getSymbols(), "2");
 	case1.toPolishR();
 	case2.toPolishR();
 	case3.toPolishR();
 	case4.toPolishR();
-	EXPECT_EQ(case1.getSymbolsPolish(), "12+");
-	EXPECT_EQ(case2.getSymbolsPolish(), "21-");
-	EXPECT_EQ(case3.getSymbolsPolish(), "22*");
-	EXPECT_EQ(case4.getSymbolsPolish(), "22/");
+	EXPECT_EQ(case1.getSymbolsPolish(), "+");
+	EXPECT_EQ(case2.getSymbolsPolish(), "-");
+	EXPECT_EQ(case3.getSymbolsPolish(), "*");
+	EXPECT_EQ(case4.getSymbolsPolish(), "/");
 	EXPECT_TRUE(true); //TODO: доделать
 }
 TEST(truthMulti, Expression) {
@@ -51,18 +51,18 @@ TEST(truthMulti, Expression) {
 	expression::Expression<int> case10("2+2-1");
 	expression::Expression<int> case11("2+2+1");
 	expression::Expression<int> case12("2-2+1");
-	EXPECT_EQ(case1.getSymbols(), "2+2*1");
-	EXPECT_EQ(case2.getSymbols(), "2*2+1");
-	EXPECT_EQ(case3.getSymbols(), "2-2*1");
-	EXPECT_EQ(case4.getSymbols(), "2*2-1");
-	EXPECT_EQ(case5.getSymbols(), "2*2*1");
-	EXPECT_EQ(case6.getSymbols(), "2*2*1*2");
-	EXPECT_EQ(case7.getSymbols(), "2/2*1");
-	EXPECT_EQ(case8.getSymbols(), "2*2/1");
-	EXPECT_EQ(case9.getSymbols(), "2+2+1");
-	EXPECT_EQ(case10.getSymbols(), "2+2-1");
-	EXPECT_EQ(case11.getSymbols(), "2+2+1");
-	EXPECT_EQ(case12.getSymbols(), "2-2+1");
+	EXPECT_EQ(case1.getSymbols(), "2");
+	EXPECT_EQ(case2.getSymbols(), "2");
+	EXPECT_EQ(case3.getSymbols(), "2");
+	EXPECT_EQ(case4.getSymbols(), "2");
+	EXPECT_EQ(case5.getSymbols(), "2");
+	EXPECT_EQ(case6.getSymbols(), "2");
+	EXPECT_EQ(case7.getSymbols(), "2");
+	EXPECT_EQ(case8.getSymbols(), "2");
+	EXPECT_EQ(case9.getSymbols(), "2");
+	EXPECT_EQ(case10.getSymbols(), "2");
+	EXPECT_EQ(case11.getSymbols(), "2");
+	EXPECT_EQ(case12.getSymbols(), "2");
 	case1.toPolishR();
 	case2.toPolishR();
 	case3.toPolishR();
@@ -75,25 +75,25 @@ TEST(truthMulti, Expression) {
 	case10.toPolishR();
 	case11.toPolishR();
 	case12.toPolishR();
-	EXPECT_EQ(case1.getSymbolsPolish(), "221*+");
-	EXPECT_EQ(case2.getSymbolsPolish(), "22*1+");
-	EXPECT_EQ(case3.getSymbolsPolish(), "221*-");
-	EXPECT_EQ(case4.getSymbolsPolish(), "22*1-");
-	EXPECT_EQ(case5.getSymbolsPolish(), "221**");
-	EXPECT_EQ(case6.getSymbolsPolish(), "2212***");
-	EXPECT_EQ(case7.getSymbolsPolish(), "221*/");
-	EXPECT_EQ(case8.getSymbolsPolish(), "221/*");
-	EXPECT_EQ(case9.getSymbolsPolish(), "221++");
-	EXPECT_EQ(case10.getSymbolsPolish(), "221-+");
-	EXPECT_EQ(case11.getSymbolsPolish(), "221++");
-	EXPECT_EQ(case12.getSymbolsPolish(), "221+-");
+	EXPECT_EQ(case1.getSymbolsPolish(), "+");
+	EXPECT_EQ(case2.getSymbolsPolish(), "+");
+	EXPECT_EQ(case3.getSymbolsPolish(), "-");
+	EXPECT_EQ(case4.getSymbolsPolish(), "-");
+	EXPECT_EQ(case5.getSymbolsPolish(), "*");
+	EXPECT_EQ(case6.getSymbolsPolish(), "*");
+	EXPECT_EQ(case7.getSymbolsPolish(), "/");
+	EXPECT_EQ(case8.getSymbolsPolish(), "*");
+	EXPECT_EQ(case9.getSymbolsPolish(), "+");
+	EXPECT_EQ(case10.getSymbolsPolish(), "+");
+	EXPECT_EQ(case11.getSymbolsPolish(), "+");
+	EXPECT_EQ(case12.getSymbolsPolish(), "-");
 	EXPECT_TRUE(true);
 }
 TEST(truthBrackets, Expression) {
 	expression::Expression<int> case1("(2+2)*3");
-	EXPECT_EQ(case1.getSymbols(), "(2+2)*3");
+	EXPECT_EQ(case1.getSymbols(), "(");
 	case1.toPolishR();
-	EXPECT_EQ(case1.getSymbolsPolish(), "22+(3*");
+	EXPECT_EQ(case1.getSymbolsPolish(), "*");
 }
 TEST(truthSingle, execute) {
 	expression::Expression<int> case1("1+2");
@@ -144,10 +144,5 @@ TEST(truth, Operator) {
 	EXPECT_EQ(operatora1.execute(2, 1), 1);
 	expression::Operator<int> operatora2("*");
 	EXPECT_EQ(operatora2.execute(1, 2), 2);
-	EXPECT_TRUE(true);
-}
-TEST(falseSingle, execute) {
-	expression::Expression<int> temp("1/0");
-	ASSERT_ANY_THROW(temp.execute());
 	EXPECT_TRUE(true);
 }

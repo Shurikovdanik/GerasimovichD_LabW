@@ -3,8 +3,7 @@
 #include "..\include\Operator.h"
 #include "..\include\basicactions.h"
 #include "..\include\Stack.h"
-#include "..\include\check.h"
-const char* OPERATORS_FIRST_SYMBOLS_LIST = " +-*/()";
+const char* OPERATORS_FIRST_SYMBOLS_LIST = "+-*/()";
 namespace expression {
 template <typename T>
 class Expression {
@@ -13,151 +12,98 @@ class Expression {
     T execute();
     custom::Stack<T> getnumbersStack;
     custom::Stack<char> getOperatorStack;
-    std::string getSymbols() {
-        return expression[0];
-    }
-    void toPolishR();
-    std::string getSymbolsPolish() {
-       
-        return expressionOther[expressionOther.getLength()-1];
-    }
     private:
-    custom::Stack<std::string> expression;
-    custom::Stack<Operator<T>> operatorStack;
-    custom::Stack<std::string> expressionOther;
+    void toPolishR();
+    std::stringstream expression;
+    custom::Stack<T> numbersStack;
+    custom::Stack<std::string> operatorStack;
 };
 template <typename T>
 Expression<T>::Expression(const std::string& given) {
     unsigned int begin = 0;
-    unsigned int end = 0;
-    int counter = 1;
+    unsigned int end;
     for (int i = 0; i < given.size() - 1; i++) {
-        if (check::isLastSymbol(given, i)) {
-            counter++;
+        if (arrayAriphmetics::count<char>(OPERATORS_FIRST_SYMBOLS_LIST, given[i]) == arrayAriphmetics::count<char>(NUM_LIST, given[i + 1])) {
+            end = i;
+            expression << given.substr(begin, end - begin + 1);
+            begin = end + 1;
         }
+        T* newStackNum = new T;
+        std::string* newOperatorStack = new std::string;
+       custom::Stack<T> numbersStack1(newStackNum, newStackNum);
+       numbersStack = numbersStack1;
+       custom::Stack<std::string> operatorsStack(newOperatorStack, newOperatorStack); 
+        operatorStack = operatorsStack;
     }
-    std::string* stringArray = new std::string[counter];
-    int counter1 = 0;
-    for (int i = 0; i < given.size() - 1; i++) {
-        if (check::isLastSymbol(given, i)) {
-            end = i + 1;
-            stringArray[counter1] = given.substr(begin, end - begin);
-            begin = end;
-            counter1++;
-        }
-    }
-    stringArray[counter1] = given.substr(begin, given.size() - begin);
-    custom::Stack<std::string> strings(stringArray, counter);
-    expression = strings;
+    T tmp[1];
+    std::string tems[1];
+
 }
 template <typename T>
 void Expression<T>::toPolishR() {
+    bool isFirst = 1;
+    std::stringstream tmpStream;
+    while (expression >> tmpStream) {}
     std::string tmp;
-    expression.selfreverse();
-     //TODO: тут остановился. Проблема: длина массива строк криво считается ; 15.12.2024
-        while ((expression >> tmp).getLength() > 0) { 
+    while (expression >> tmp) {
         if (arrayAriphmetics::count(NUM_LIST, tmp[0])) {
-            expressionOther << tmp; 
+            numbersStack << stod(tmp);
+            numbersStack >> expression;
         }
-        else if (arrayAriphmetics::count(OPERATORS_FIRST_SYMBOLS_LIST, tmp[0])) {  
-                Operator<T> stackOperator(tmp);
-                Operator<T> tmpOperator(tmp);
+        if (arrayAriphmetics::count(OPERATORS_FIRST_SYMBOLS_LIST, tmp[0])) {
+            Operator tempOperator (tmp);
+            if (isFirst) {
+                isFirst = 0;
+                operatorStack << tempOperator;
+            }
+            else {
+                Operator<T> stackOperator;
+                operatorStack >> stackOperator;
                 if (tmp == ")") {
                     unsigned int rightBracket = operatorStack.getLength() + 1;
-                    Operator<T> temp("(");
-                     unsigned int leftBracket = arrayAriphmetics::findLastLooked<Operator<T>*, Operator<T>>(operatorStack.getAlloc(), temp, operatorStack.getLength());
-                     for (int i = rightBracket - 1; i > leftBracket; i--) {
-
-                      operatorStack >> tmpOperator;
-                      
-                      expressionOther << tmpOperator.getSymbols();
+                    Operator temp("(");
+                     unsigned int leftBracket = arrayAriphmetics::findLastLooked(operatorStack.getAlloc(),temp);
+                   for (int i = rightBracket - 1; i > leftBracket; i--) {
+                    operatorStack >> expression;
                    }
                 }
-                else if (operatorStack.getLength() > 0) {
-                    operatorStack >> stackOperator;
-                    if (tmpOperator.getPriority() < stackOperator.getPriority() && tmpOperator.getSymbols() != "(") {
-                        expressionOther << stackOperator.getSymbols();
-                        operatorStack << tmpOperator;
-                    }
-                    else {
-                        operatorStack << stackOperator;
-                        operatorStack << tmpOperator;
-                    }
+                if (stackOperator.getPriority() < stackOperator.getPriority()) {
+                    expression << stackOperator.getSymbols();
+                    operatorStack << tmp;
                 }
-                else {
-                    operatorStack << stackOperator;
-                    operatorStack << tmpOperator;
-                }
+            }
         }
-       
     }
-        if (arrayAriphmetics::count(NUM_LIST, tmp[0])) {
-            expressionOther << tmp;
-        }
-        else if (arrayAriphmetics::count(OPERATORS_FIRST_SYMBOLS_LIST, tmp[0])) {
-                Operator<T> stackOperator(tmp);
-                Operator<T> tmpOperator(tmp);
-                if (tmp == ")") {
-                    unsigned int rightBracket = operatorStack.getLength() + 1;
-                    Operator<T> temp("(");
-                    unsigned int leftBracket = arrayAriphmetics::findLastLooked<Operator<T>*, Operator<T>>(operatorStack.getAlloc(), temp, operatorStack.getLength());
-                    for (int i = rightBracket - 1; i > leftBracket; i--) {
-                        operatorStack >> tmpOperator;
-                        expressionOther << tmpOperator.getSymbols();
-                    }
-                }
-                else if (operatorStack.getLength() > 0) {
-                    operatorStack >> stackOperator;
-                    if (tmpOperator.getPriority() < stackOperator.getPriority() && tmpOperator.getSymbols() != "(") {
-                        expressionOther << stackOperator.getSymbols();
-                        operatorStack << tmpOperator;
-                    }
-                    else {
-                        operatorStack << stackOperator;
-                        operatorStack << tmpOperator;
-                    }
-                }
-                else {
-                    operatorStack << stackOperator;
-                }
-        }
     Operator<T> temp;
-    while ((operatorStack >> temp).getLength() > 0) {
-            expressionOther << temp.getSymbols();
-          
+    while (operatorStack >> temp) {
+        expression << temp.getSymbols();
     }
 }
 template <typename T>
 T Expression<T>::execute(){
-    toPolishR();
-    expressionOther.selfreverse();
-   //TODO: здесь проблема
-    T res = 0;
+    std::stringstream tempStream;
+     std::string tem;
+    while (expression >> tem) {
+        tempStream << tem;
+        }
+        T* first1 = new T;
+    T res;
     std::string temp;
-    custom::Stack<T> numbers;
-    while ((expressionOther >> temp).getLength() > 0) {
-       
+    tempStream >> temp;;
+    res = stod(temp);
+    custom::Stack<T> numbers(first1, first1);
+    while (expression >> temp) {
         if (arrayAriphmetics::count(NUM_LIST, temp[0])) {
             numbers << stod(temp);
         }
         else {
-            if (temp != "(") {
-                T first, second;
-                numbers >> first >> second;
-                Operator<T> tempOperator(temp);
-                res = tempOperator.execute(second, first);
-                numbers << res;
-            }
+            T first, second;
+            numbers >> second >> first;
+            Operator<T> tempOperator(temp);
+            numbers << tempOperator.execute(first, second);
         }
     }
-    T first, second;
-  
-    numbers >> first;
-    second = numbers[0];
-    Operator<T> tempOperator(temp);
-    if (temp != "(") {
-        res = tempOperator.execute(second, first);
-    }
+    numbers >> res;
     return res;
 }
 }

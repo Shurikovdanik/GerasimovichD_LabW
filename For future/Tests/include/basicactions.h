@@ -5,6 +5,7 @@
 #include <vector>
 #include <array>
 #include <sstream>
+#include "..\pch.h"
 const unsigned int MAX_BUFFER = 300;
 namespace input {
     template <typename T>
@@ -82,18 +83,20 @@ namespace arrayAriphmetics {
         return counter;
     }
     template <typename T, typename U>
-    int findFirstLooked (T array, U looked) {
-        for (int i = 0; i < sizeof(array) / sizeof(T); i++) {
+    int findFirstLooked (T array, U looked, int num) { //Для одинаковой работоспособности для вектора и массива
+        
+        for (int i = 0; i < num; i++) {
            if(array[i] == looked) {
                 return i;
+              
             }
         }
        throw std::exception ("No such element.");
        return -1; 
     }
     template <typename T, typename U>
-    int findLastLooked (T array, U looked) {
-        for (int i = sizeof(array) / sizeof(T); i >=0; i--) {
+    int findLastLooked (T array, U looked, int num) {
+        for (int i = num - 1; i >= 0; i--) {
            if(array[i] == looked) {
                 return i;
             }
