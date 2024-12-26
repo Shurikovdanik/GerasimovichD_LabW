@@ -30,7 +30,7 @@ class Expression {
         return res;
     }
     private:
-    custom::Stack<std::string> getExpression();
+    custom::Stack<std::string> Expression<T>::getExpression();
     custom::Stack<std::string> expression;
     custom::Stack<Operator<T>> operatorStack;
     custom::Stack<std::string> expressionOther;
@@ -65,10 +65,9 @@ Expression<T>::Expression(const std::string& given) {
     expression = strings;
 }
 template <typename T>
-void Expression<T>::toPolishR() {
+void Expression<T>::toPolishR() { //Рљ РѕР±СЂР°С‚РЅРѕР№ РїРѕР»СЊСЃРєРѕР№ Р·Р°РїРёСЃРё(РІ РІС‚РѕСЂРѕР№ СЃС‚РµРє РІС‹СЂР°Р¶РµРЅРёСЏ)
     std::string tmp;
-    expression.selfreverse();
-     //TODO: тут остановился. Проблема: длина массива строк криво считается ; 15.12.2024
+    expression.selfreverse(); 
         while ((expression >> tmp).getLength() > 0) { 
         if (arrayAriphmetics::count(NUM_LIST, tmp[0])) {
             expressionOther << tmp; 
@@ -145,7 +144,7 @@ template <typename T>
 T Expression<T>::execute(){
     toPolishR();
     expressionOther.selfreverse();
-   //TODO: здесь проблема
+   //TODO: Г§Г¤ГҐГ±Гј ГЇГ°Г®ГЎГ«ГҐГ¬Г 
     T res = 0;
     std::string temp;
     custom::Stack<T> numbers;
