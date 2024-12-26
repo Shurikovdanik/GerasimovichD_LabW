@@ -4,40 +4,85 @@ namespace custom {
     class Stack {
         public: 
         Stack (T* begin, T* end);
-        Stack () {
-            begin = new T[0];
-            end = begin;
-            }
+        Stack();
+        Stack(T* begin, int length);
         T* getAlloc() const;
         Stack (const Stack& other);
         ~Stack();
         Stack (const Stack&& other);
-        int getLength ();
-        bool operator == (const Stack& other) const;
-        void operator =(const Stack& other);
-        Stack& operator =(const Stack&& other);
-        Stack& push (T element);
-        Stack& pop (T& changed);
-        Stack& operator << (T element);
-        Stack& operator >> (T& changed);
-        T operator [](int current);
+        int getLength () const; //получить количество элементов
+        bool operator == (const Stack& other) const; //сравнение стеков
+        void operator =(const Stack& other); // присвоение копированием
+        Stack& operator =(const Stack&& other); //присвоение перемещением
+        Stack& push (T element);//внесение верхнего
+        Stack& pop (T& changed);//вынесение верхнего
+        Stack reverse() const; //перевернуть стек с присвоением
+        void selfreverse(); //перевернуть стек(полностью)
+        Stack& operator << (T element); //внесение верхнего
+        Stack& operator >> (T& changed); //вынесение верхнего
+        T operator [](int current); //оператор извлечения по индексу
         private: 
-        T* getEnd() const;
-        T* begin;
-        T* end;
+        T* getEnd() const;  //получить указатель на последний элемент
+        T* begin;//указатель на первый элемент
+        T* end;//указатель на последний элемент
     };
 }
 
 
 namespace custom {
     template <typename T>
-    int Stack<T>::getLength () {
-       return (end - begin) / sizeof(T); 
+    Stack<T> Stack<T>::reverse() const{
+        int length = getLength();
+        T* array = new T[length];
+        for (int i = 0; i < length; i++) {
+            array[i] = begin[length - i - 1];
+        }
+        Stack<T> res(array, length);
+        return res;
     }
     template <typename T>
-    Stack<T>& Stack<T>::push (T element) {
-        end += sizeof(T);
-        begin[(end - begin) / sizeof(T) - 1] = element;
+    void Stack<T>::selfreverse() {
+        int length = getLength();
+        
+        for (int i = 0; i < length / 2; i++) {
+            T temp;
+            temp = begin[i];
+           begin[i]=begin[length - i - 1];
+           begin[length - i - 1] = temp;
+        }
+       
+    }
+    template <typename T>
+    int Stack<T>::getLength () const{
+        size_t length = end - begin;
+        int res = 0;
+        for (int i = 0; i < length; i += sizeof(begin[i])) {
+            res++;
+        }
+       return  res; 
+    }
+    template <typename T>
+    Stack<T>& Stack<T>::push (T element) { 
+        int length = getLength();
+        size_t byteLength = end - begin;
+       
+        if (length == 0) {
+            this->begin = new T[1];
+            begin[0] = element;
+            this->end = begin + sizeof(element);
+        }
+        else {
+            T* temp = new T[length];
+            for (int i = 0; i < length; i++) {
+                temp[i] = begin[i];
+            }
+            this->begin = new T[length + 1];
+            for (int i = 0; i < length; i++) {
+                begin[i] = temp[i];
+            }
+            begin[length] = element;
+            this->end = this->begin + byteLength + sizeof(element);
+        }
         return *this;
     }
     template <typename T> 
@@ -50,26 +95,46 @@ namespace custom {
     }
     template <typename T>
     Stack<T>& Stack<T>::pop (T& changed) {
-        changed = *end;
-        end -= sizeof(T);
+        if (begin == end) {
+            throw std::runtime_error("Less than zero elements will be");
+        }
+            int length = this->getLength();
+            changed = getAlloc()[length - 1];
+            this->end = getEnd() - sizeof(getAlloc()[length - 1]);
         return *this;
     }
     template <typename T>
-    T Stack<T>::operator [](int current) {
+    T Stack<T>::operator [](int current){
         if (current < getLength()) {
             return begin[current];
         }
-        else throw "out of range";
+        else throw std::runtime_error("out of range");
+        throw std::exception_ptr();
     }
     template <typename T> 
     Stack<T>::Stack (T* begin, T* end){
-            T* tmp = new T[(end - begin) / sizeof(begin)];
-            for (int i = 0; i < (end - begin) / sizeof(begin); i++) {
-                tmp[i] = begin[i];
+        int length = end - begin;
+        
+            this->begin = new T[length];
+            for (int i = 0; i < length; i+=sizeof(begin[i])) {
+                this->begin[i] = begin[i];
             }
-            this -> begin = tmp;
-            this -> end = tmp + (end - begin);
+            this -> end = (this -> begin) +length;
         }
+    template <typename T>
+    Stack<T>::Stack(T* begin, int length) {
+        this->begin = new T[length];
+        for (int i = 0; i < length; i++) {
+            this->begin[i] = begin[i];
+        }
+        this->end = this -> begin + sizeof(T) * (length);
+    }
+    template <typename T>
+    Stack<T>::Stack() {
+        T* tmp = new T[1];
+        this->begin = tmp;
+        this->end = tmp;
+    }
 template <typename T>       
 Stack<T>:: ~Stack(){
         
@@ -90,8 +155,7 @@ template <typename T>
         Stack<T>::Stack (const custom::Stack<T>&& other) {
             this -> begin = other.getAlloc();
             this -> end = other.getEnd();
-            delete []other.getAlloc();
-            delete []other.getEnd();
+            
         }
         template <typename T>
         void custom::Stack<T>::operator = (const Stack<T>& other) {
@@ -101,11 +165,10 @@ template <typename T>
         }
         template <typename T>
         Stack<T>& custom::Stack<T>::operator = (const Stack<T>&& other) {
-            if (!(this == other)) {
-                delete this;
-                Stack (other);
-                return *this;
-            }
+                Stack res (other);
+                this -> begin = res.getAlloc();
+                this->end = res.getEnd();
+                return res;
         }
         template <typename T>
         bool Stack<T>::operator ==(const Stack<T>& other) const{

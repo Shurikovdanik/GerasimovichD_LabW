@@ -4,7 +4,7 @@
 #include <vector>
 #include <array>
 #include "..\include\basicactions.h"
-#pragma once
+#include "..\pch.h"
     int fromFileAriphmetics::size (std::string filename) {
         int res = 0;
         std::ifstream fin;
