@@ -65,10 +65,9 @@ Expression<T>::Expression(const std::string& given) {
     expression = strings;
 }
 template <typename T>
-void Expression<T>::toPolishR() {
+void Expression<T>::toPolishR() { //К обратной польской записи(в второй стек выражения)
     std::string tmp;
-    expression.selfreverse();
-     //TODO: òóò îñòàíîâèëñÿ. Ïðîáëåìà: äëèíà ìàññèâà ñòðîê êðèâî ñ÷èòàåòñÿ ; 15.12.2024
+    expression.selfreverse(); 
         while ((expression >> tmp).getLength() > 0) { 
         if (arrayAriphmetics::count(NUM_LIST, tmp[0])) {
             expressionOther << tmp; 
