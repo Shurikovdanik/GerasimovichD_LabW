@@ -156,7 +156,7 @@ T Expression<T>::execute(){
         else {
             if (temp != "(") {
                 T first, second;
-                if (numbers.getLength() == 1) {
+                if (numbers.getLength() == 1 && temp == "-") {
                     numbers >> first;
                     second = 0;
                 }
@@ -174,7 +174,7 @@ T Expression<T>::execute(){
         numbers >> first;
         second = numbers[0];
     }
-    if (numbers.getLength() == 1) {
+    if (numbers.getLength() == 1 && temp == "-") {
         numbers >> first;
         second = 0;
     }
