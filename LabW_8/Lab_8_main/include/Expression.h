@@ -145,7 +145,7 @@ T Expression<T>::execute(){
     toPolishR();
     expressionOther.selfreverse();
    //TODO: çäåñü ïðîáëåìà
-    T res = 0;
+        T res = 0;
     std::string temp;
     custom::Stack<T> numbers;
     while ((expressionOther >> temp).getLength() > 0) {
@@ -156,7 +156,13 @@ T Expression<T>::execute(){
         else {
             if (temp != "(") {
                 T first, second;
-                numbers >> first >> second;
+                if (numbers.getLength() == 1 && temp == "-") {
+                    numbers >> first;
+                    second = 0;
+                }
+                if (numbers.getLength() > 1) {
+                    numbers >> first >> second;
+                }
                 Operator<T> tempOperator(temp);
                 res = tempOperator.execute(second, first);
                 numbers << res;
@@ -164,9 +170,14 @@ T Expression<T>::execute(){
         }
     }
     T first, second;
-  
-    numbers >> first;
-    second = numbers[0];
+    if (numbers.getLength() > 1) {
+        numbers >> first;
+        second = numbers[0];
+    }
+    if (numbers.getLength() == 1 && temp == "-") {
+        numbers >> first;
+        second = 0;
+    }
     Operator<T> tempOperator(temp);
     if (temp != "(") {
         res = tempOperator.execute(second, first);
