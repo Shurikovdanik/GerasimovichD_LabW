@@ -1,0 +1,19 @@
+.data
+x00	-1	
+x01	3 	
+x02	2	
+x03	1	
+x04	10	
+x05	_	
+.code
+mov	Ak   x01
+mul	Ak   x04
+mul	Ak   x04
+add	Ak   x03
+mov	x05  Ak     
+mov	Ak   x04
+mul	Ak   x02
+mul	Ak   x00    
+add	Ak   x05
+mov	x05  Ak      
+end
