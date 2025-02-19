@@ -9,6 +9,24 @@
 #include <ctime>
 #include "MainLogic.h"
 #include "workWithTime.h"
-int MainLogic::execute(QVBoxLayout& layout) {
-    return 0;
+int MainLogic::execute(QApplication& app) {
+    QMainWindow wnd;
+    wnd.setWindowTitle("Lab_W_1");
+    wnd.setGeometry(300, 300, 600, 300);
+    QWidget centralWidget(&wnd);
+    QVBoxLayout layout;
+    QLabel label1;
+    QLabel label2;
+    label1.setText(QString::number(getHour()) + ":" + QString::number(getMin()) + ":" + QString::number(getMs()));
+    label2.setText(QString::number(getYear()) + "." + QString::number(getMonth() +  1) + "." + QString::number(getYDay()));
+    QFont font("Arial", 20);
+    label1.setFont(font);
+    label2.setFont(font);
+    layout.setAlignment(Qt::AlignmentFlag::AlignTop | Qt::AlignmentFlag::AlignCenter);
+    layout.addWidget(&label1);
+    layout.addWidget(&label2);
+    centralWidget.setLayout(&layout);
+    wnd.setCentralWidget(&centralWidget);
+    wnd.show();
+    return app.exec();
 }

@@ -13,7 +13,7 @@
 class MainLogic
 {
 public:
-    int execute(QVBoxLayout& layout);
+    int execute(QApplication& app);
 };
 
 #endif // MAINLOGIC_H
