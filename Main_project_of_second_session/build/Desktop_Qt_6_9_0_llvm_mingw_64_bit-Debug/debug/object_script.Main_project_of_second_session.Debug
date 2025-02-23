@@ -1,0 +1,13 @@
+debug/appliedvector.o
+debug/boxesoperations.o
+debug/commonplatform.o
+debug/extremelyweakplatform.o
+debug/hbox.o
+debug/killzone.o
+debug/logic.o
+debug/main.o
+debug/mainmenu.o
+debug/platform.o
+debug/player.o
+debug/weakplatform.o
+debug/moc_mainmenu.o

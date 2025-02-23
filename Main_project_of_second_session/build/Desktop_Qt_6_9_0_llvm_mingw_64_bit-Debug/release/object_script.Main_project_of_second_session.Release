@@ -1,0 +1,13 @@
+release/appliedvector.o
+release/boxesoperations.o
+release/commonplatform.o
+release/extremelyweakplatform.o
+release/hbox.o
+release/killzone.o
+release/logic.o
+release/main.o
+release/mainmenu.o
+release/platform.o
+release/player.o
+release/weakplatform.o
+release/moc_mainmenu.o
