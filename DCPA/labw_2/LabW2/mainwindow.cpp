@@ -36,12 +36,17 @@ void MainWindow::saveFile() {
     out << text->text();
     file.close();
 }
-void MainWindow::Button170() {
+void MainWindow::task170() {
     MainL res;
     text->setText(res.ex170(textEdit->toPlainText()));
 }
-void MainWindow::task170 () {
-
+void MainWindow::task182 () {
+    MainL res;
+    text->setText(res.ex182(textEdit->toPlainText()));
+}
+void MainWindow::task194 () {
+    MainL res;
+    text->setText(res.ex194(textEdit->toPlainText()));
 }
 MainWindow::~MainWindow()
 {
