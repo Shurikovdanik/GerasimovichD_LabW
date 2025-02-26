@@ -12,13 +12,11 @@ SOURCES += \
     MainL.cpp \
     main.cpp \
     mainwindow.cpp \
-    render.cpp \
     word.cpp
 
 HEADERS += \
     MainL.h \
     mainwindow.h \
-    render.h \
     word.h
 
 FORMS += \
