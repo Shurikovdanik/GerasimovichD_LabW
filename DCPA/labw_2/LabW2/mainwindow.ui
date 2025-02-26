@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>600</height>
+    <height>587</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,7 +24,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="SaveButton">
+   <widget class="QPushButton" name="saveFile">
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -76,19 +76,6 @@
      <string>194</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="checker">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>390</y>
-      <width>111</width>
-      <height>24</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Save to file</string>
-    </property>
-   </widget>
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
@@ -109,7 +96,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>26</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>
