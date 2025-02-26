@@ -27,6 +27,11 @@ QString MainL::ex194(QString given) {
     QVector<Word> wordsFirst, wordsSecond;
     wordsFirst = sentences[0].devideIntoUnits(SPACE);
     wordsSecond = sentences[1].devideIntoUnits(SPACE);
-    QVector <Word> res;
-
+    QVector <Word> res = getEverythingAside(wordsFirst, wordsSecond);
+    QString result = "";
+    for (int i = 0; i < res.size(); i++) {
+        result += res[i].getLine();
+        result += " ";
+    }
+    return result;
 }

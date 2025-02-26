@@ -39,12 +39,23 @@ QVector <Word> Word::devideIntoUnits(QChar diviser)  {
 }
 QVector<Word> Word::getEverythingAside(QVector<Word> words) {
     QVector<Word> res;
+    Word th(getLine());
     for(int i = 0; i < words.size(); i++) {
-        if(!(this& == words[i])) {
-
+        if(!(th == words[i])) {
+            res.push_back(words[i]);
         }
     }
+    return res;
 }
-QVector<Word> getEverythingAside(QVector<Word> words) {
-
+QVector<Word> getEverythingAside(QVector<Word> wordsFirst, QVector<Word> wordsSecond) {
+    for (int i = 0; i < wordsFirst.size(); i++) {
+        wordsSecond = wordsFirst[i].getEverythingAside(wordsSecond);
+    }
+    for (int i = 0; i < wordsSecond.size(); i++) {
+        wordsFirst = wordsSecond[i].getEverythingAside(wordsFirst);
+    }
+     for (int i = 0; i < wordsSecond.size(); i++) {
+        wordsFirst.push_back(wordsSecond[i]);
+    }
+    return wordsFirst;
 }

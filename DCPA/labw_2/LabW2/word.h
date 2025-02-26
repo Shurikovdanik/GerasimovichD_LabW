@@ -16,5 +16,5 @@ public:
     Word(QString line) {this -> line = line;}
     bool operator==(Word other) {return line == other.getLine();}
 };
-QVector<Word> getEverythingAside(QVector<Word> words);
+QVector<Word> getEverythingAside(QVector<Word> wordsFirst, QVector<Word> wordsSecond);
 #endif // WORD_H
