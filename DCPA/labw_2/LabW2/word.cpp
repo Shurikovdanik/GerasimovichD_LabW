@@ -2,10 +2,10 @@
 #include <QString>
 #include <QVector>
 Word Word::getEverythingAside(QChar symbol) {
-    QString res;
+    QString res = "";
     for (int i = 0; i < line.length(); i++) {
         if(line[i] != symbol) {
-            res.assign(line[i]);
+            res +=(line[i]);
         }
     }
     Word result(res);
@@ -28,7 +28,7 @@ QVector <Word> Word::devideIntoUnits(QChar diviser)  {
             temp = "";
         }
         else {
-            temp.assign(line[i]);
+            temp += (line[i]);
         }
     }
     if (temp != "") {

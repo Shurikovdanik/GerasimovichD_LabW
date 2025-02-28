@@ -1,6 +1,7 @@
 #ifndef MAINL_H
 #define MAINL_H
 #include "word.h"
+#include <QtLogging>
 class MainL
 {
 public:
