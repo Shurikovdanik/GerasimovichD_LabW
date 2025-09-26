@@ -16,13 +16,62 @@ TEST(NumberTest, CanBeConstructedFromFloat) {
 
 
 
-TEST(NumberOperatorsTest, Addition) {
-    Number::Number a(2.5f);
-    Number::Number b(3.5f);
-    Number::Number result = a + b;
-    EXPECT_FLOAT_EQ(result.toFloat(), 6.0f);
+TEST(NumberAdditionTest, SimplePositive)
+{
+     Number::Number a =  Number::Number::fromString("1.0e0", Number::systems::BASE_TEN);
+     Number::Number b =  Number::Number::fromString("1.0e0", Number::systems::BASE_TEN);
+     Number::Number c = a + b;
+
+    EXPECT_FLOAT_EQ(c.toFloat(), 2.0f);
+}
+TEST(NumberAdditionTest, SimplePositiveFromFloat)
+{
+     Number::Number a =  Number::Number(1.0f);
+     Number::Number b =  Number::Number(1.0f);
+     Number::Number c = a + b;
+
+    EXPECT_FLOAT_EQ(c.toFloat(), 2.0f);
 }
 
+TEST(NumberAdditionTest, Fractional)
+{
+     Number::Number a =  Number::Number::fromString("1.5e0", Number::systems::BASE_TEN);
+     Number::Number b =  Number::Number::fromString("1.5e0", Number::systems::BASE_TEN);
+     Number::Number c = a + b;
+
+    EXPECT_FLOAT_EQ(c.toFloat(), 3.0f);
+}
+
+TEST(NumberAdditionTest, DifferentSigns)
+{
+     Number::Number a =  Number::Number::fromString("2.0e0", Number::systems::BASE_TEN);
+     Number::Number b =  Number::Number::fromString("-1.0e0", Number::systems::BASE_TEN);
+     Number::Number c = a + b;
+
+    EXPECT_FLOAT_EQ(c.toFloat(), 1.0f);
+}
+
+TEST(NumberAdditionTest, DifferentExponents)
+{
+     Number::Number a =  Number::Number::fromString("1.0e3", Number::systems::BASE_TEN); 
+     Number::Number b =  Number::Number::fromString("1.0e2", Number::systems::BASE_TEN); 
+     Number::Number c = a + b;
+
+    EXPECT_FLOAT_EQ(c.toFloat(), 1100.0f);
+}
+
+TEST(NumberAdditionTest, NormalizationOverflow)
+{
+    // 1.0 * 2^0 + 1.0 * 2^0 = 2.0
+     Number::Number a =  Number::Number::fromString("1.0e0", Number::systems::BASE_TEN);
+     Number::Number b =  Number::Number::fromString("1.0e0", Number::systems::BASE_TEN);
+     Number::Number c = a + b;
+
+    EXPECT_FLOAT_EQ(c.toFloat(), 2.0f);
+    // Проверим, что мантисса нормализована в Q23
+    EXPECT_GE(c.getMantissa(), (1 << 23));
+    EXPECT_LT(c.getMantissa(), (1 << 24));
+}
 TEST(NumberOperatorsTest, Subtraction) {
     Number::Number a(10.0f);
     Number::Number b(4.0f);
@@ -30,7 +79,7 @@ TEST(NumberOperatorsTest, Subtraction) {
     EXPECT_FLOAT_EQ(result.toFloat(), 6.0f);
 }
 
-TEST(NumberOperatorsTest, Multiplication) {
+TEST(NumberOperatorsTest, MultiplicationSimple) {
     Number::Number a(2.0f);
     Number::Number b(5.0f);
     Number::Number result = a * b;

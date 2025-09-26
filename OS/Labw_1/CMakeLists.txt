@@ -31,7 +31,6 @@ if(NOT TARGET testi)
 
     target_link_libraries(testi PRIVATE Num Vector)
 endif()
-
 set(GTEST_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/googletest/build")
 set(GTEST_INCLUDE_DIR "${GTEST_ROOT}/../googletest/include")
 set(GTEST_LIBRARY "${GTEST_ROOT}/lib/Debug/gtestd.lib")
@@ -39,7 +38,7 @@ set(GTEST_MAIN_LIBRARY "${GTEST_ROOT}/lib/Debug/gtest_maind.lib")
 enable_testing()
 add_subdirectory(${GTEST_ROOT}/..)
 
-add_executable(tests tests/test_number.cpp)
+add_executable(tests tests/test_number.cpp tests/test_vectors.cpp)
 target_link_libraries(tests PRIVATE Num gtest gtest_main)
 
 include(GoogleTest)

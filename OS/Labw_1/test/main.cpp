@@ -3,12 +3,9 @@
 #include "../include/Vector.h"
 int main() {
 
-    Number::Number a(1.0);
-    a = Number::Number::fromString("1.0");
-    Number::Number b(1.0);
-    b.setFormat(Number::systems::BASE_TWO);
-    b = Number::Number::fromString("14e-2", Number::systems::BASE_TEN);
-    b.setFormat(Number::systems::BASE_TEN);
-    std::cout << b.getMantissa() << " " << b.getExponenta() <<" " << b.toDecimalString();
+    Number::Number a(0.5);
+    a = Number::Number::fromString("1.5e0", Number::systems::BASE_TEN);
+    Number::Number b(2.30f);
+    b = Number::Number::fromString("1.5e0", Number::systems::BASE_TEN);
     return 0;
 }
