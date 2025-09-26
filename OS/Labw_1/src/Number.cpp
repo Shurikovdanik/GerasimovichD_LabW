@@ -2,7 +2,7 @@
 
 float Number::Number::toFloat() const
 {
-    float value = static_cast<float>(_mantissa) * std::pow(10.0f, _exp);
+    float value = static_cast<float>(_mantissa) * std::pow(int(this->_format), _exp);
     return _sign ? -value : value;
 }
 std::string Number::Number::toDecimalString()
@@ -12,9 +12,9 @@ std::string Number::Number::toDecimalString()
     if (_sign)
         oss << "-";
     else
-        oss << "+";
+        oss << "";
 
-    long double value = static_cast<long double>(_mantissa) * std::pow(10.0L, _exp);
+    long double value = static_cast<long double>(_mantissa) * std::pow(int(this->_format), _exp);
 
     oss << std::fixed << std::setprecision(10) << value;
 
@@ -25,7 +25,7 @@ std::string Number::Number::toString()
 {
     std::string result;
 
-    result += (_sign ? "-" : "+");
+    result += (_sign ? "-" : "");
 
     result += std::to_string(_mantissa);
 
@@ -85,7 +85,7 @@ namespace Number
 
     Number Number::operator*(const Number &other)
     {
-        long long mantRes = (_mantissa * other._mantissa) >> 16; // масштабируем
+        long long mantRes = (_mantissa * other._mantissa) >> 16; 
         long long expRes = _exp + other._exp;
         bool signRes = _sign ^ other._sign;
 
@@ -111,30 +111,20 @@ namespace Number
     {
         return Number(0, _mantissa - other.getMantissa(), _exp);
     }
-    Number::Number(float given)
-    {
+
+    Number::Number(float given) {
         uint32_t rawBits;
         std::memcpy(&rawBits, &given, sizeof(float));
-        std::bitset<32> bits(rawBits);
-        this->_sign = bits[31];
-        std::bitset<8> expBits;
-        for (int i = 0; i < 8; ++i)
-        {
-            expBits[i] = bits[i + 23];
+        this->_sign = (rawBits >> 31) & 0x1;
+        uint32_t expBits = (rawBits >> 23) & 0xFF;
+        uint32_t manBits = rawBits & 0x7FFFFF;
+        this->_exp = static_cast<int>(expBits) - 127;
+        if (expBits != 0) {
+            this->_mantissa = static_cast<long long>(manBits) | (1LL << 23);
+        } else {
+            this->_mantissa = static_cast<long long>(manBits);
         }
-        std::bitset<23> manBits;
-        for (int i = 0; i < 23; ++i)
-        {
-            manBits[i] = bits[i];
-        }
-
-        this->_exp = static_cast<int>(expBits.to_ulong()) - 127;
-        this->_mantissa = static_cast<long long>(manBits.to_ulong());
-
-        if (expBits.to_ulong() != 0)
-        {
-            this->_mantissa |= (1LL << 23);
-        }
+        this->_format = BASE_TWO;
     }
     Number::Number(bool sign, long long mantissa, long long exp)
     {
