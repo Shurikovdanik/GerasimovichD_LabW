@@ -7,19 +7,20 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
-if(NOT TARGET Num)
-    add_library(Num STATIC 
-        src/Number.cpp
+add_library(Num STATIC IMPORTED)
+
+set_target_properties(Num PROPERTIES
+    IMPORTED_LOCATION   "${CMAKE_CURRENT_SOURCE_DIR}/lib/Num.lib"   
+)
+
+if(NOT TARGET Matrix)
+    add_library(Matrix STATIC 
+        src/Matrix.cpp
     )
-    target_include_directories(Num PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+    link_libraries(Num)
+    target_include_directories(Matrix PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 endif()
-if(NOT TARGET Vector)
-    add_library(Vector SHARED 
-        src/Vector.cpp
-    )
-    target_include_directories(Vector PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
-    target_link_libraries(Vector PRIVATE Num)
-endif()
+
 
 if(NOT TARGET testi)
     add_executable(testi
@@ -28,7 +29,6 @@ if(NOT TARGET testi)
 
     target_include_directories(testi PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-    target_link_libraries(testi PRIVATE Num Vector)
 endif()
 set(GTEST_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/googletest/build")
 set(GTEST_INCLUDE_DIR "${GTEST_ROOT}/../googletest/include")
@@ -37,8 +37,8 @@ set(GTEST_MAIN_LIBRARY "${GTEST_ROOT}/lib/Debug/gtest_maind.lib")
 enable_testing()
 add_subdirectory(${GTEST_ROOT}/..)
 
-add_executable(tests tests/test_number.cpp tests/test_vectors.cpp)
-target_link_libraries(tests PRIVATE Num gtest gtest_main)
+add_executable(tests tests/Matrix_test.cpp)
+target_link_libraries(tests PRIVATE Num Matrix gtest gtest_main)
 
 include(GoogleTest)
 gtest_discover_tests(tests)
