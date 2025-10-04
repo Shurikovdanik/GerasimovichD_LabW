@@ -2,7 +2,7 @@
 #include "Number.h"
 #include <gtest/gtest.h>
 #include <chrono>
-using Num = Number::Number;
+using Num = float;
 
 TEST(MatrixTest, Transpose2x3) {
     int dx = 2, dy = 3;
@@ -49,10 +49,10 @@ TEST(MatrixTest, Multiply2x2) {
 
     Matrix C = A * B;
 
-    EXPECT_EQ(C[0][0].toFloat(), 19);
-    EXPECT_EQ(C[0][1].toFloat(), 22);
-    EXPECT_EQ(C[1][0].toFloat(), 43);
-    EXPECT_EQ(C[1][1].toFloat(), 50);
+    EXPECT_EQ(C[0][0], 19);
+    EXPECT_EQ(C[0][1], 22);
+    EXPECT_EQ(C[1][0], 43);
+    EXPECT_EQ(C[1][1], 50);
 }
 TEST(MatrixTest, MultiplyInvalid) {
     int dx = 2, dy = 3;
@@ -168,9 +168,9 @@ TEST(MatrixHelpersTest, ArrayMulSimple) {
 
     Num* res = Matrix::arrrayMul(a, b, 3);
 
-    EXPECT_EQ(res[0].toFloat(), 4);   // 1*4
-    EXPECT_EQ(res[1].toFloat(), 10);  // 2*5
-    EXPECT_EQ(res[2].toFloat(), 18);  // 3*6
+    EXPECT_EQ(res[0], 4);   // 1*4
+    EXPECT_EQ(res[1], 10);  // 2*5
+    EXPECT_EQ(res[2], 18);  // 3*6
 
     delete[] res; // освобождаем память
 }
@@ -181,10 +181,10 @@ TEST(MatrixHelpersTest, ArrayMulWithZeros) {
 
     Num* res = Matrix::arrrayMul(a, b, 4);
 
-    EXPECT_EQ(res[0].toFloat(), 0);   // 0*5
-    EXPECT_EQ(res[1].toFloat(), 0);   // 2*0
-    EXPECT_EQ(res[2].toFloat(), 0);   // 0*7
-    EXPECT_EQ(res[3].toFloat(), 4);   // 4*1
+    EXPECT_EQ(res[0], 0);   // 0*5
+    EXPECT_EQ(res[1], 0);   // 2*0
+    EXPECT_EQ(res[2], 0);   // 0*7
+    EXPECT_EQ(res[3], 4);   // 4*1
 
     delete[] res;
 }
@@ -194,12 +194,12 @@ TEST(MatrixHelpersTest, ArraySumSimple) {
     Num arr[3] = {1, 2, 3};
     Num sum = Matrix::arraySum(arr, 3);
 
-    EXPECT_EQ(sum.toFloat(), 6); // 1+2+3
+    EXPECT_EQ(sum, 6); // 1+2+3
 }
 
 TEST(MatrixHelpersTest, ArraySumWithNegatives) {
     Num arr[5] = {10, -5, 3, -2, 4};
     Num sum = Matrix::arraySum(arr, 5);
 
-    EXPECT_EQ(sum.toFloat(), 10); // 10-5+3-2+4 = 10
+    EXPECT_EQ(sum, 10); // 10-5+3-2+4 = 10
 }

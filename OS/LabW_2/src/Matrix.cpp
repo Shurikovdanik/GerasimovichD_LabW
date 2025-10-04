@@ -3,7 +3,7 @@
 #include <vector>
 #include <stdexcept>
 #include <iostream>
-using Num = Number::Number;
+using Num = float;
 // Конструкторы (упрощённо)
 Matrix::Matrix(Num** given, unsigned int dx,unsigned int dy)
     : numbers(given)
@@ -33,7 +33,7 @@ Matrix Matrix::transpond() const {
 }
 
 
-// Вспомогательная функция для вычисления одного элемента
+
 Num Matrix::getPartialMul(const Matrix& other, int i, int j) const {
     Num sum = 0;
     for (int k = 0; k < dx; ++k) {
@@ -42,7 +42,7 @@ Num Matrix::getPartialMul(const Matrix& other, int i, int j) const {
     return sum;
 }
 
-// Вспомогательная функция для вычисления строки
+
 Num* Matrix::getMulLines(const Matrix& other, int i) const {
     Num* row = new Num[other.dx];
     for (int j = 0; j < other.dx; ++j) {
@@ -64,29 +64,43 @@ Matrix::Matrix(int rows, int cols)
 
 // Многопоточное умножение
 Matrix Matrix::operator*(const Matrix& other) const {
-    if (this->dy != other.dx) {
+    if (dy != other.dx) {
         throw std::invalid_argument("Matrix dimensions do not match for multiplication");
     }
+
+    Matrix result(dx, other.dy);
     Matrix temp = other.transpond();
-    Matrix result(this->dx, other.dy); 
 
+    unsigned nthreads = std::thread::hardware_concurrency();
     std::vector<std::thread> threads;
-    threads.reserve(this->dx);
+    threads.reserve(nthreads);
 
-    for (int i = 0; i < this->dx; ++i) {
-        for (int j = 0; j < other.dy; ++j) {
-        threads.emplace_back([&, i, j]() {
-                result[i][j] = Matrix::arraySum(Matrix::arrrayMul(this->numbers[i], temp[j], dx), dx);
-        });
-    }
-    }
+    auto worker = [&](int tid) {
+        for (int ii = tid * BLOCK_SIZE; ii < dx; ii += nthreads * BLOCK_SIZE) {
+            for (int jj = 0; jj < other.dy; jj += BLOCK_SIZE) {
+                for (int kk = 0; kk < dy; kk += BLOCK_SIZE) {
+                    for (int i = ii; i < std::min(ii + BLOCK_SIZE, dx); ++i) {
+                        for (int j = jj; j < std::min(jj + BLOCK_SIZE, other.dy); ++j) {
+                            Num sum = result[i][j];
+                            for (int k = kk; k < std::min(kk + BLOCK_SIZE, dy); ++k) {
+                                sum = sum + this->numbers[i][k] * temp.numbers[j][k];
+                            }
+                            result[i][j] = sum;
+                        }
+                    }
+                }
+            }
+        }
+    };
 
-    for (auto& t : threads) {
-        t.join();
+    for (unsigned t = 0; t < nthreads; ++t) {
+        threads.emplace_back(worker, t);
     }
+    for (auto &th : threads) {th.join();}
 
     return result;
 }
+
 
 
 Matrix Matrix::vanillaMul(const Matrix& other) const {

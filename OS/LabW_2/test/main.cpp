@@ -1,6 +1,6 @@
 #include "../include/Matrix.h"
 #include "../include/Number.h"
-using Num = Number::Number;
+using Num = float;
 
 int main() {
     Num a[3] = {1, 2, 3};
