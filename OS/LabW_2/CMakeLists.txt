@@ -26,7 +26,7 @@ if(NOT TARGET testi)
     add_executable(testi
         test/main.cpp
     )
-
+    target_link_libraries(testi PRIVATE Num Matrix)
     target_include_directories(testi PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 endif()

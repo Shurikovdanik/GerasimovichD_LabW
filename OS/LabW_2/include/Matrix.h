@@ -12,15 +12,19 @@ class Matrix {
     protected:
     Num* getMulLines(const Matrix& other, int j) const;
     public:
+    static Num arraySum(const Num* array, int len);
+    static Num* arrrayMul(const Num* array, const Num* otherArray, int len);
     int getDX() {return dx;}
     int getDY() {return dy;}
     Matrix::Matrix(Num** given, int rows, int cols)
     : numbers(given), dx(rows), dy(cols) {}
     Matrix(Num** given, unsigned int dx, unsigned int dy);
-    Num* operator[] (int index) {return numbers[index];}
+    Matrix(int dx, int dy);
+    Num* operator[] (int index) const {return numbers[index];}
     Matrix operator*(const Matrix& other) const;
     bool isSameSize(const Matrix& other) const;
     Matrix transpond() const;
     void update(int dx, int dy);
+    Matrix vanillaMul(const Matrix& other) const;
 
 };
