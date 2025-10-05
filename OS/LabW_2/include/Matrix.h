@@ -1,7 +1,7 @@
 #pragma once
 #include <thread>
 #include "Number.h"
-using Num = float;
+using Num = float; // Number::Number is slower by about 10 times
 const int BLOCK_SIZE = 32;
 class Matrix {
     private:
