@@ -101,7 +101,7 @@ TEST(MatrixTest, Multiply1000x1000) {
     delete[] B;
 }
 TEST (MatrixTestCompare, Matrix_vanilla){
-    const int size = 100;
+    const int size = 1000;
 
     Num** A = new Num*[size];
     Num** B = new Num*[size];
@@ -119,9 +119,9 @@ TEST (MatrixTestCompare, Matrix_vanilla){
     Matrix result = mA.vanillaMul(mB);
   
     // Проверка нескольких элементов
-    EXPECT_EQ(result[0][0], Num(200)); // 1000 * 2
-    EXPECT_EQ(result[size - 1][size - 1], Num(200));
-    EXPECT_EQ(result[size / 2][size / 2], Num(200));
+    EXPECT_EQ(result[0][0], Num(2000)); // 1000 * 2
+    EXPECT_EQ(result[size - 1][size - 1], Num(2000));
+    EXPECT_EQ(result[size / 2][size / 2], Num(2000));
 
     // Очистка памяти
     for (int i = 0; i < size; ++i) {
@@ -132,7 +132,7 @@ TEST (MatrixTestCompare, Matrix_vanilla){
     delete[] B;
 }
 TEST (MatrixTestCompare, Matrix_Multithread){
-    const int size = 100;
+    const int size = 1000;
 
     Num** A = new Num*[size];
     Num** B = new Num*[size];
@@ -149,9 +149,9 @@ TEST (MatrixTestCompare, Matrix_Multithread){
     Matrix mB(B, size, size);
     Matrix result = mA * mB;
     // Проверка нескольких элементов
-    EXPECT_EQ(result[0][0], Num(200)); // 1000 * 2
-    EXPECT_EQ(result[size - 1][size - 1], Num(200));
-    EXPECT_EQ(result[size / 2][size / 2], Num(200));
+    EXPECT_EQ(result[0][0], Num(2000)); // 1000 * 2
+    EXPECT_EQ(result[size - 1][size - 1], Num(2000));
+    EXPECT_EQ(result[size / 2][size / 2], Num(2000));
 
     // Очистка памяти
     for (int i = 0; i < size; ++i) {
