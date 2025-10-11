@@ -2,7 +2,7 @@
 #include <thread>
 #include "Number.h"
 using Num = float; // Number::Number is slower by about 10 times
-const int BLOCK_SIZE = 32;
+const int BLOCK_SIZE = 64;
 class Matrix {
     private:
     float** numbers;
@@ -27,5 +27,5 @@ class Matrix {
     Matrix transpond() const;
     void update(int dx, int dy);
     Matrix vanillaMul(const Matrix& other) const;
-
+    std::string toString() const;
 };

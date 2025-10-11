@@ -10,7 +10,7 @@ TEST(MatrixTest, Transpose2x3) {
     for (int i = 0; i < dx; ++i) {
         arr[i] = new Num[dy];
         for (int j = 0; j < dy; ++j) {
-            arr[i][j] = i * dy + j + 1; // 1..6
+            arr[i][j] = i * dy + j + 1; 
         }
     }
 
@@ -202,4 +202,34 @@ TEST(MatrixHelpersTest, ArraySumWithNegatives) {
     Num sum = Matrix::arraySum(arr, 5);
 
     EXPECT_EQ(sum, 10); // 10-5+3-2+4 = 10
+}
+
+using namespace std::chrono;
+
+TEST(MatrixTest, Multiply1000x1000_Performance)
+{
+    const int N = 1000;
+
+    Matrix A(N, N);
+    Matrix B(N, N);
+    for (int i = 0; i < N; ++i) {
+        for (int j = 0; j < N; ++j) {
+            A[i][j] = 1.0f;
+            B[i][j] = 1.0f;
+        }
+    }
+
+    auto start = high_resolution_clock::now();
+    Matrix C = A * B;
+    auto end = high_resolution_clock::now();
+
+    auto duration = duration_cast<milliseconds>(end - start).count();
+    std::cout << "Matrix " << N << "x" << N << " multiplication took "
+              << duration << " ms" << std::endl;
+
+    for (int i = 0; i < N; ++i) {
+        for (int j = 0; j < N; ++j) {
+            ASSERT_FLOAT_EQ(C[i][j], static_cast<float>(N));
+        }
+    }
 }
