@@ -1,3 +1,6 @@
 [submodule "OS/LabW_2/googletest"]
 	path = OS/LabW_2/googletest
 	url = https://github.com/google/googletest.git
+[submodule "OS/LabW_3/eventsystem"]
+	path = OS/LabW_3/eventsystem
+	url = https://github.com/Shurikovdanik/Event-system
