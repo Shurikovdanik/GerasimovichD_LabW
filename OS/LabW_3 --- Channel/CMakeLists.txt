@@ -27,8 +27,8 @@ FetchContent_Declare(
 )
 
 
-
 FetchContent_MakeAvailable(spdlog googletest)
+add_subdirectory(eventsystem)
 if(NOT TARGET Tunnel)
     add_library(Tunnel SHARED 
         src/ThreadTunnel.cpp

@@ -1,0 +1,2 @@
+sqrt  1.0
+fAnswer: 0.2500
