@@ -1,12 +1,12 @@
 #include "../include/Matrix.h"
 #include "../include/Number.h"
+#include "ThreadTunnel.h"
 #include <vector>
 #include <stdexcept>
 #include <iostream>
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/rotating_file_sink.h>
 #include <mutex>
-
 
 using Num = float;
 Matrix::Matrix(Num **given, unsigned int dx, unsigned int dy)
@@ -75,52 +75,42 @@ Matrix::Matrix(int rows, int cols)
 }
 
 // Многопоточное умножение
-Matrix Matrix::operator*(const Matrix &other) const
-{
-    if (dy != other.dx)
-    {
+Matrix Matrix::operator*(const Matrix &other) const {
+    if (dy != other.dx) {
         throw std::invalid_argument("Matrix dimensions do not match for multiplication");
     }
 
     Matrix result(dx, other.dy);
     Matrix temp = other.transpond();
 
-    unsigned nthreads = std::thread::hardware_concurrency() / 2;
-    std::vector<std::thread> threads;
-    threads.reserve(nthreads);
-
+    using Task = std::tuple<int,int>; 
+    ThreadTunnel<Task> tunnel;
     std::mutex result_mutex;
-
-auto worker = [&](int tid, int tjd)
-{
-
-    int rowStart = tid * BLOCK_SIZE;
-    int colStart = tjd * BLOCK_SIZE;
-    for (int i = rowStart; i < std::min(rowStart + BLOCK_SIZE, dx); i++)
-    {
-        for (int j = colStart; j < std::min(colStart + BLOCK_SIZE, other.dy); j++)
-        {
-            Num sum = Num(0);
-            for (int k = 0; k < dy; ++k)
-            {
-                sum = sum + this->numbers[i][k] * temp.numbers[j][k];
-            }
-            {
+    for (int i = 0; i < std::thread::hardware_concurrency() * 1.0; i++) {
+        tunnel.addThread("Thread" + std::to_string(i), [&](const Task& task) {
+        auto [ti, tj] = task;
+        int rowStart = ti * BLOCK_SIZE;
+        int colStart = tj * BLOCK_SIZE;
+        for (int i = rowStart; i < std::min(rowStart + BLOCK_SIZE, dx); i++) {
+            for (int j = colStart; j < std::min(colStart + BLOCK_SIZE, other.dy); j++) {
+                Num sum = Num(0);
+                for (int k = 0; k < dy; ++k) {
+                    sum = sum + this->numbers[i][k] * temp.numbers[j][k];
+                }
                 std::lock_guard<std::mutex> lock(result_mutex);
-                result[i][j] = result[i][j] + sum;
-                
+                result[i][j] += sum;
             }
         }
+    });
+}   //Нужна оптимизация на добавление в очередь
+    for (int ti = 0; ti < (dx + BLOCK_SIZE - 1) / BLOCK_SIZE; ++ti) {
+        for (int tj = 0; tj < (other.dy + BLOCK_SIZE - 1) / BLOCK_SIZE; ++tj) {
+            tunnel.send(std::make_tuple(ti, tj));
+        }
     }
-};
+    //В туннеле нужно по ивентам бы
+    std::this_thread::sleep_for(std::chrono::milliseconds(10 * dx / std::thread::hardware_concurrency()));
 
-    for (int ti = 0; ti < std::ceil(dx / BLOCK_SIZE) + 1; ++ti)
-    for (int tj = 0; tj < std::ceil(other.dy / BLOCK_SIZE) + 1; ++tj)
-        threads.emplace_back(worker, ti, tj);
-    for (auto &th : threads)
-    {
-        th.join();
-    }
     return result;
 }
 

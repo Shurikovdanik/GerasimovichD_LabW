@@ -4,12 +4,12 @@ using EventHandler = std::function<void(void)>;
 /**
  * Наблюдатель, наблюдает за Event
  */
-class EventListener {
-    private:
+class EventListener
+{
+private:
     EventHandler handler;
 
-    public:
-
+public:
     EventListener(EventHandler handler);
     /**
      * активация слушатель

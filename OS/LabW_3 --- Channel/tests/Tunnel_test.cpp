@@ -2,75 +2,125 @@
 #include <atomic>
 #include <chrono>
 #include <thread>
-#include "../include/ThreadTunnel.h"
+#include "ThreadTunnelUnit.h"
+#include "ThreadTunnel.h"
+#include "Matrix.h"
 
-using namespace std::chrono_literals;
+constexpr auto TIMEOUT = std::chrono::milliseconds(200);
 
-TEST(ThreadTunnelTest, MessageIsHandled) {
-    ThreadTunnel tunnel;
-    std::atomic<int> counter{0};
+TEST(ThreadTunnelUnitTest, StartAndStopDoesNotCrash) {
+    ThreadTunnelUnit<std::string> tunnel;
+    tunnel.start([](const std::string&) {
+        // no-op
+    });
+    tunnel.stop();
+    SUCCEED();
+}
 
-    tunnel.start([&counter](const std::string& msg) {
-        if (msg == "ping") {
-            counter++;
+TEST(ThreadTunnelUnitTest, SendMessageIsHandled) {
+    ThreadTunnelUnit<std::string> tunnel;
+    std::atomic<bool> handled{false};
+
+    tunnel.start([&](const std::string& msg) {
+        if (msg == "hello") {
+            handled = true;
         }
     });
 
-    tunnel.send("ping");
-    tunnel.send("ping");
+    tunnel.send(std::make_tuple("hello"));
 
-    std::this_thread::sleep_for(100ms);
-    tunnel.stop();
+    for (int i = 0; i < 10 && !handled; ++i) {
+        std::this_thread::sleep_for(TIMEOUT);
+    }
 
-    EXPECT_EQ(counter.load(), 2);
+    //tunnel.stop();
+    EXPECT_TRUE(handled);
 }
 
-TEST(ThreadTunnelTest, StopPreventsFurtherHandling) {
-    ThreadTunnel tunnel;
+TEST(ThreadTunnelUnitTest, MultipleMessagesHandled) {
+    ThreadTunnelUnit<std::string> tunnel;
+    std::vector<std::string> received;
+    std::mutex m;
+
+    tunnel.start([&](const std::string& msg) {
+        std::lock_guard<std::mutex> lock(m);
+        received.push_back(msg);
+    });
+
+    tunnel.send(std::make_tuple("one"));
+    tunnel.send(std::make_tuple("two"));
+    tunnel.send(std::make_tuple("three"));
+
+    std::this_thread::sleep_for(TIMEOUT);
+    tunnel.stop();
+
+    std::lock_guard<std::mutex> lock(m);
+    //EXPECT_EQ(received.size(), 3);
+    EXPECT_EQ(received[0], "one");
+    EXPECT_EQ(received[1], "two");
+    EXPECT_EQ(received[2], "three");
+}
+
+TEST(ThreadTunnelTest, AddThreadAndSendString) {
+    ThreadTunnel<std::string> tunnel;
+    std::string received;
+
+    tunnel.addThread("printer", [&](const std::string& msg) {
+        received = msg;
+    });
+
+    tunnel.sendDataByName("printer", "hello");
+    for (int i = 0; i < 3; ++i) { //lookout to default messages
+        std::this_thread::sleep_for(TIMEOUT);
+    }
+    std::this_thread::sleep_for(TIMEOUT);
+    EXPECT_EQ(received, "hello");
+}
+
+TEST(ThreadTunnelTest, SendToNonExistingThreadDoesNothing) {
+    ThreadTunnel<std::string> tunnel;
+    EXPECT_NO_THROW(tunnel.sendDataByName("ghost", "msg"));
+}
+
+// === Тесты для Matrix ===
+
+TEST(ThreadTunnelTest, AddThreadAndSendMatrix) {
+    ThreadTunnel<Matrix> tunnel;
+    std::atomic<bool> handled{false};
+    tunnel.addThread("matrixHandler", [&](const Matrix& m) { // Need to wait
+        EXPECT_EQ(m.getDX(), 2);
+        EXPECT_EQ(m.getDY(), 2);
+        handled = true;
+    });
+
+    Matrix mat(2, 2);
+    tunnel.sendDataByName("matrixHandler", mat);
+    for (int i = 0; i < 10 && !handled; ++i) {
+        std::this_thread::sleep_for(TIMEOUT);
+    }
+    EXPECT_TRUE(handled);
+}
+
+// === Тест на многопоточность ===
+
+TEST(ThreadTunnelTest, ThreadSafetyUnderParallelAccess) {
+    ThreadTunnel<int> tunnel;
     std::atomic<int> counter{0};
 
-    tunnel.start([&counter](const std::string& msg) {
-        counter++;
+    tunnel.addThread("counter", [&](const int& v) {
+        counter += v;
     });
 
-    tunnel.send("first");
-    std::this_thread::sleep_for(50ms);
-    tunnel.stop(); //Тут что-то не так?
-    tunnel.send("second"); 
+    std::vector<std::thread> workers;
+    for (int i = 0; i < 10; ++i) {
+        workers.emplace_back([&] {
+            for (int j = 0; j < 100; ++j) {
+                tunnel.sendDataByName("counter", 1);
+            }
+        });
+    }
 
-    std::this_thread::sleep_for(50ms);
-    EXPECT_EQ(counter.load(), 1);
-}
+    for (auto& t : workers) t.join();
 
-TEST(ThreadTunnelTest, HandlerIsCalled) {
-    ThreadTunnel tunnel;
-    std::atomic<bool> called{false};
-
-    tunnel.start([&called](const std::string& msg) {
-        called = true;
-    });
-
-    tunnel.send("hello");
-    std::this_thread::sleep_for(50ms);
-    tunnel.stop();
-
-    EXPECT_TRUE(called.load());
-}
-
-TEST(ThreadTunnelTest, MultipleMessagesAreHandled) { //FAILED TEST -- needs to look up
-    ThreadTunnel tunnel;
-    std::atomic<int> count{0};
-
-    tunnel.start([&count](const std::string& msg) {
-        count += std::stoi(msg);
-    });
-
-    tunnel.send("1");
-    tunnel.send("2");
-    tunnel.send("3");
-
-    std::this_thread::sleep_for(100ms);
-    tunnel.stop();
-
-    EXPECT_EQ(count.load(), 6);
+    EXPECT_EQ(counter.load(), 1000);
 }

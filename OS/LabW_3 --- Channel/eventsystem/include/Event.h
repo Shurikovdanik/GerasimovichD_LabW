@@ -4,13 +4,32 @@
 /**
  * Класс наблюдаемый, вызываемый -- простое событие без дополнительных параметров
  */
-class Event {
-    private:
-    std::vector<EventListener*> _listeners;
-    public:
+class Event
+{
+private:
+    int id;
+    std::vector<EventListener *> _listeners;
+
+protected:
+    Event(int id)
+    {
+        this->id = id;
+    }
+
+public:
+    /**
+     * Объединяет вектора слушателей под одним событием, если их идентификаторы равны, иначе не меняет.
+     */
+    void unite(Event *other);
+    int getID()
+    {
+        return id;
+    }
     Event() = default;
-    virtual void emit() {
-        for (EventListener* cur : _listeners) {
+    virtual void emit()
+    {
+        for (EventListener *cur : _listeners)
+        {
             cur->update();
         }
     }
@@ -18,8 +37,8 @@ class Event {
      * @note
      * It is strongly recommended NOT to call Event->addListener(listener) manually.
      */
-    void addListener(EventListener* listener) {
+    void addListener(EventListener *listener)
+    {
         this->_listeners.push_back(listener);
     }
-
 };

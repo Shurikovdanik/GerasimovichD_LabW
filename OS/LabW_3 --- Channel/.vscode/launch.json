@@ -5,7 +5,7 @@
       "name": "Debug Google Tests",
       "type": "cppvsdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/build/Debug/tests.exe",
+      "program": "${workspaceFolder}/build/tests.exe",
       "args": [],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",

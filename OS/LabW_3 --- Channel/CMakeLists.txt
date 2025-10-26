@@ -1,16 +1,14 @@
 cmake_minimum_required(VERSION 3.18)
 project(test VERSION 1.0.0 LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 if (MSVC)
     add_compile_options(/utf-8)
 endif()
-
 add_library(Num STATIC IMPORTED)
-
 set_target_properties(Num PROPERTIES
     IMPORTED_LOCATION   "${CMAKE_CURRENT_SOURCE_DIR}/lib/Num.lib"   
 )
@@ -30,26 +28,46 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(spdlog googletest)
 add_subdirectory(eventsystem)
 if(NOT TARGET Tunnel)
-    add_library(Tunnel SHARED 
-        src/ThreadTunnel.cpp
+    add_library(Tunnel OBJECT  
+        src/ThreadTunnelUnit.cpp
+        src/Thread.cpp
     )
-    link_libraries(Num spdlog::spdlog)
-    target_include_directories(Tunnel PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/spdlog-src/include)
+    target_link_libraries(Tunnel PRIVATE Num Events spdlog::spdlog)
+    target_include_directories(Tunnel PRIVATE
+     ${CMAKE_CURRENT_SOURCE_DIR}/include
+     ${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/spdlog-src/include
+     ${CMAKE_CURRENT_SOURCE_DIR}/eventsystem/include
+     )
 endif()
 if(NOT TARGET Matrix)
-    add_library(Matrix STATIC 
+    add_library(Matrix OBJECT  
         src/Matrix.cpp
     )
-    link_libraries(Num spdlog::spdlog)
-    target_include_directories(Matrix PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/spdlog-src/include)
+    target_link_libraries(Matrix PRIVATE Num spdlog::spdlog)
+    target_include_directories(Matrix PUBLIC
+     ${CMAKE_CURRENT_SOURCE_DIR}/include
+     ${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/spdlog-src/include
+     ${CMAKE_CURRENT_SOURCE_DIR}/eventsystem/include
+     )
 endif()
-
+if(NOT TARGET MatrixExtended)
+    add_library(MatrixExtended STATIC 
+    $<TARGET_OBJECTS:Matrix>
+    $<TARGET_OBJECTS:Tunnel>
+    )
+    target_link_libraries(MatrixExtended PRIVATE Num spdlog::spdlog)
+    target_include_directories(MatrixExtended PUBLIC
+     ${CMAKE_CURRENT_SOURCE_DIR}/include
+     ${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/spdlog-src/include
+     ${CMAKE_CURRENT_SOURCE_DIR}/eventsystem/include
+     )
+endif()
 
 if(NOT TARGET testi)
     add_executable(testi
         test/main.cpp
     )
-    target_link_libraries(testi PRIVATE Num Matrix)
+    target_link_libraries(testi PRIVATE Events Num MatrixExtended)
     target_include_directories(testi PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 endif()
@@ -59,7 +77,7 @@ if(NOT TARGET tests)
         tests/Tunnel_test.cpp
     )
     include(GoogleTest)
-    target_link_libraries(tests PRIVATE Num Matrix Tunnel gtest_main)
+    target_link_libraries(tests PRIVATE Events MatrixExtended Events gtest_main)
     target_include_directories(tests PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/googletest-src ${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/spdlog-src)
 
 endif()

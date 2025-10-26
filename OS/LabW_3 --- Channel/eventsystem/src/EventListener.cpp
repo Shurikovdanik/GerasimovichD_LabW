@@ -1,8 +1,10 @@
 #include "EventListener.h"
 
-EventListener::EventListener(EventHandler handler) {
+EventListener::EventListener(EventHandler handler)
+{
     this->handler = handler;
 }
-void EventListener::update() {
+void EventListener::update()
+{
     handler();
 }
