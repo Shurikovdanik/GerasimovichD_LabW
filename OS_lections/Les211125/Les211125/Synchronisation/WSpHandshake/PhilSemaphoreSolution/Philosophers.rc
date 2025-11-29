@@ -1,0 +1,27 @@
+#include "Resource.h"
+#include <windows.h>
+
+IDI_APPICON ICON "app.ico"
+
+IDD_MAIN_DIALOG DIALOGEX 0, 0, 320, 260
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dining Philosophers (Dijkstra)"
+FONT 9, "Segoe UI"
+BEGIN
+    PUSHBUTTON      "Start",    IDC_START_BUTTON, 10, 10, 60, 18
+    PUSHBUTTON      "Stop",     IDC_STOP_BUTTON,  80, 10, 60, 18
+
+    LTEXT           "P0:",      -1,               10, 44, 18, 12
+    LTEXT           "",         IDC_PH0,          32, 42, 90, 16, SS_SIMPLE
+    LTEXT           "P1:",      -1,               10, 64, 18, 12
+    LTEXT           "",         IDC_PH1,          32, 62, 90, 16, SS_SIMPLE
+    LTEXT           "P2:",      -1,               10, 84, 18, 12
+    LTEXT           "",         IDC_PH2,          32, 82, 90, 16, SS_SIMPLE
+    LTEXT           "P3:",      -1,               10, 104, 18, 12
+    LTEXT           "",         IDC_PH3,          32, 102, 90, 16, SS_SIMPLE
+    LTEXT           "P4:",      -1,               10, 124, 18, 12
+    LTEXT           "",         IDC_PH4,          32, 122, 90, 16, SS_SIMPLE
+
+    LTEXT           "Protocol log:", -1,          10, 146, 80, 12
+    LISTBOX         IDC_LOG,                10, 160, 300, 90, WS_VSCROLL | LBS_NOTIFY | LBS_NOINTEGRALHEIGHT
+END

@@ -1,0 +1,334 @@
+Microsoft (R) COFF/PE Dumper Version 14.29.30146.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+Using: DUMPBIN [parameters] [files]
+
+  [parameters] :
+
+      /ALL
+      /ARCHIVEMEMBERS
+      /CLRHEADER
+      /DEPENDENTS
+      /DIRECTIVES
+      /DISASM[:{BYTES|NOBYTES}]
+      /ERRORREPORT:{NONE|PROMPT|QUEUE|SEND}
+      /EXPORTS
+      /FPO
+      /HEADERS
+      /IMPORTS[:имя_файла]
+      /LINENUMBERS
+      /LINKERMEMBER[:{1|2|4|8|16|32}]
+      /LOADCONFIG
+      /NOLOGO
+      /NOPDB
+      /OUT:filename
+      /PDATA
+      /PDBPATH[:VERBOSE]
+      /RANGE:vaMin[,vaMax]
+      /RAWDATA[:{NONE|1|2|4|8}[,#]]
+      /RELOCATIONS
+      /SECTION:имя
+      /SUMMARY
+      /SYMBOLS
+      /TLS
+      /UNWINDINFO
+dumpbin  /IMPORTS  /OUT:Report.txt "D:\OS24\RegexHandshake\Synchronisation\Release_PHIL_PRROBLEME\PhillosopersProblem (2).exe"
+
+
+Dump of file D:\OS24\RegexHandshake\Synchronisation\Release_PHIL_PRROBLEME\PhillosopersProblem (2).exe
+
+File Type: EXECUTABLE IMAGE
+
+  Section contains the following imports:
+
+    mfc90.dll
+                404140 Import Address Table
+                405AD0 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                      Ordinal   967
+                      Ordinal   965
+                      Ordinal   969
+                      Ordinal  2610
+                      Ordinal  2630
+                      Ordinal  2614
+                      Ordinal  2620
+                      Ordinal  2618
+                      Ordinal  2616
+                      Ordinal  2633
+                      Ordinal  2628
+                      Ordinal  2612
+                      Ordinal  2635
+                      Ordinal  2623
+                      Ordinal  2605
+                      Ordinal  2607
+                      Ordinal  2625
+                      Ordinal  2375
+                      Ordinal  2368
+                      Ordinal  1644
+                      Ordinal  6784
+                      Ordinal  4160
+                      Ordinal  6782
+                      Ordinal  3671
+                      Ordinal  5389
+                      Ordinal  6356
+                      Ordinal  3218
+                      Ordinal  1446
+                      Ordinal  5608
+                      Ordinal  2139
+                      Ordinal  1792
+                      Ordinal  1791
+                      Ordinal  1728
+                      Ordinal  5633
+                      Ordinal  3135
+                      Ordinal  3277
+                      Ordinal  4895
+                      Ordinal  3519
+                      Ordinal   595
+                      Ordinal  2274
+                      Ordinal  1668
+                      Ordinal  4638
+                      Ordinal  3480
+                      Ordinal   310
+                      Ordinal  1752
+                      Ordinal  4431
+                      Ordinal  1108
+                      Ordinal  1137
+                      Ordinal  2045
+                      Ordinal  1925
+                      Ordinal  1938
+                      Ordinal  2057
+                      Ordinal  1918
+                      Ordinal  4993
+                      Ordinal  2591
+                      Ordinal   316
+                      Ordinal  2360
+                      Ordinal  2539
+                      Ordinal  6740
+                      Ordinal  2069
+                      Ordinal   524
+                      Ordinal   744
+                      Ordinal  2815
+                      Ordinal  3479
+                      Ordinal  1183
+                      Ordinal  2106
+                      Ordinal  3534
+                      Ordinal  1358
+                      Ordinal   963
+                      Ordinal  5167
+                      Ordinal  4502
+                      Ordinal  1497
+                      Ordinal   798
+                      Ordinal  3506
+                      Ordinal  4668
+                      Ordinal  5636
+                      Ordinal  1496
+                      Ordinal  6388
+                      Ordinal  3344
+                      Ordinal  1678
+                      Ordinal  1809
+                      Ordinal  1810
+                      Ordinal  5309
+                      Ordinal  5152
+                      Ordinal  4617
+                      Ordinal  5615
+                      Ordinal  1755
+                      Ordinal  6391
+                      Ordinal  3346
+                      Ordinal   601
+                      Ordinal   611
+                      Ordinal   654
+                      Ordinal  3987
+                      Ordinal   639
+                      Ordinal   374
+                      Ordinal  4434
+                      Ordinal  4409
+                      Ordinal  6783
+                      Ordinal  4159
+                      Ordinal  6781
+                      Ordinal  4733
+                      Ordinal  2251
+                      Ordinal  2206
+                      Ordinal  6018
+                      Ordinal  4165
+                      Ordinal  1046
+                      Ordinal  5533
+                      Ordinal  6721
+                      Ordinal  5813
+                      Ordinal  4199
+                      Ordinal  2087
+                      Ordinal  3209
+                      Ordinal  5657
+                      Ordinal  5659
+                      Ordinal  2447
+                      Ordinal  4333
+                      Ordinal  4981
+                      Ordinal  5663
+                      Ordinal  5646
+                      Ordinal  6001
+                      Ordinal  2766
+                      Ordinal  2978
+                      Ordinal  3107
+                      Ordinal  4714
+                      Ordinal  2961
+                      Ordinal  3110
+                      Ordinal  2769
+                      Ordinal  2888
+                      Ordinal  2759
+                      Ordinal  4066
+                      Ordinal  4067
+                      Ordinal  4057
+                      Ordinal  2886
+                      Ordinal  4334
+                      Ordinal  4890
+                      Ordinal  4667
+                      Ordinal   958
+                      Ordinal  5666
+                      Ordinal  5668
+                      Ordinal  6446
+                      Ordinal  1729
+                      Ordinal  4688
+                      Ordinal  5139
+                      Ordinal  3732
+                      Ordinal  5647
+                      Ordinal  4589
+                      Ordinal  6780
+                      Ordinal  5497
+                      Ordinal  2074
+                      Ordinal  5585
+                      Ordinal  6077
+                      Ordinal  4650
+                      Ordinal  3659
+                      Ordinal  2208
+                      Ordinal  6462
+                      Ordinal  1098
+                      Ordinal  4197
+                      Ordinal   793
+                      Ordinal   589
+                      Ordinal  6291
+                      Ordinal  4331
+                      Ordinal  4029
+                      Ordinal  1276
+                      Ordinal  4952
+                      Ordinal   265
+                      Ordinal   266
+                      Ordinal   800
+
+    MSVCR90.dll
+                404070 Import Address Table
+                405A00 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                   73 __CxxFrameHandler3
+                   48 _CIasin
+                   5A _CxxThrowException
+                   4B _CIcos
+                  365 _setmbcp
+                  13F _controlfp_s
+                  20B _invoke_watson
+                  173 _except_handler4_common
+                   36 ?_type_info_dtor_internal_method@type_info@@QAEXXZ
+                  14B _crt_debugger_hook
+                   43 ?terminate@@YAXXZ
+                   E0 __set_app_type
+                   CF __p__fmode
+                   CB __p__commode
+                  10B _adjust_fdiv
+                   E3 __setusermatherr
+                  13C _configthreadlocale
+                  205 _initterm_e
+                  204 _initterm
+                   FD _acmdln
+                  4CC exit
+                  225 _ismbblead
+                   66 _XcptFilter
+                  17C _exit
+                  12C _cexit
+                   9F __getmainargs
+                  115 _amsg_exit
+                  160 _decode_pointer
+                  31C _onexit
+                  276 _lock
+                  16A _encode_pointer
+                   96 __dllonexit
+                  3E6 _unlock
+                  124 _beginthreadex
+                   52 _CIsin
+
+    KERNEL32.dll
+                40401C Import Address Table
+                4059AC Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                  37B ReleaseSemaphore
+                   99 CreateSemaphoreA
+                  462 WaitForMultipleObjects
+                  266 GetTickCount
+                  38D ResumeThread
+                  24F GetSystemTimeAsFileTime
+                  1AA GetCurrentProcessId
+                  1AD GetCurrentThreadId
+                  24E GetSystemTimeAdjustment
+                  354 QueryPerformanceCounter
+                  2D1 IsDebuggerPresent
+                  415 SetUnhandledExceptionFilter
+                  43E UnhandledExceptionFilter
+                  1A9 GetCurrentProcess
+                  42D TerminateProcess
+                  239 GetStartupInfoA
+                  2BA InterlockedCompareExchange
+                  2BD InterlockedExchange
+                  464 WaitForSingleObject
+                  421 Sleep
+
+    USER32.dll
+                404100 Import Address Table
+                405A90 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                  1F8 MessageBoxA
+                  1CD KillTimer
+                  1F7 MessageBeep
+                  29E SetTimer
+                  1AA InvalidateRect
+                   BF DrawIcon
+                  10D GetClientRect
+                  16F GetSystemMetrics
+                  1BD IsIconic
+                  25E SendMessageA
+                    9 AppendMenuA
+                  16E GetSystemMenu
+                  1D6 LoadIconA
+                   D1 EnableWindow
+                  21E PostMessageA
+
+    GDI32.dll
+                404008 Import Address Table
+                405998 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                  25E SelectObject
+                   D9 Ellipse
+                  246 Rectangle
+                   52 CreateSolidBrush
+
+    COMCTL32.dll
+                404000 Import Address Table
+                405990 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                   7A InitCommonControlsEx
+
+  Summary
+
+        1000 .data
+        3000 .rdata
+        1000 .reloc
+        7000 .rsrc
+        3000 .text

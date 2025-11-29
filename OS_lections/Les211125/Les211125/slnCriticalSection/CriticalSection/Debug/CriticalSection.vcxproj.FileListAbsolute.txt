@@ -1,0 +1,2 @@
+D:\OS2223Z\WSpCriticalSections\CriticalSection\Debug\CriticalSection.exe
+D:\OS25\Thread\slnCriticalSection\CriticalSection\Debug\CriticalSection.exe
