@@ -1,0 +1,19 @@
+»зменение состо€ний philosopher(k)
+THINKING на HUNGRY и HUNGRY на EATING
+выполн€ет take_forks(k) внутри критической секции,
+а EATING на THINKING - put_forks(k) 
+также внутри критической секции.
+SEMAPHORE S открывает вход в
+критическую секцию.
+
+ќднако переход от HUNGRY к EATING зависит
+от семафора S[k], который пропускает 
+k-поток philosopher(k)
+от take_forks(k) к eat(k), если 
+S[k] в SIGNALED state.
+
+ѕеревод S[k] в SIGNALED state может 
+либо сам k-поток либо правый (RIGHT==(k+1)%N)
+либо левый (LEFT==(i-1+N)%N)(по часовой стрелке нумераци€).
+Ёто действие выполн€ет вызов test(k) в take_forks(k) 
+либо вызов test(k) выполн€ют соседи в своих вызовах функции  put_forks.

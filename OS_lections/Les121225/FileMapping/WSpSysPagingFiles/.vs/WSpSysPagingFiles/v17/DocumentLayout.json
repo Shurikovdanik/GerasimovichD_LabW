@@ -1,0 +1,53 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\OS25\\FileMapping\\WSpSysPagingFiles\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{4C5B5A7B-28F5-49BC-9D49-1CCA0B79CF92}|PgFlClient\\PgFlClient.vcxproj|D:\\OS25\\FileMapping\\WSpSysPagingFiles\\PgFlClient\\PgFlClient.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{4C5B5A7B-28F5-49BC-9D49-1CCA0B79CF92}|PgFlClient\\PgFlClient.vcxproj|solutionrelative:PgFlClient\\PgFlClient.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F4F022B0-5D97-4FA1-BF4B-24BE0A2A1F78}|PgFlServer\\PgFlServer.vcxproj|D:\\OS25\\FileMapping\\WSpSysPagingFiles\\PgFlServer\\PgFlServer.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{F4F022B0-5D97-4FA1-BF4B-24BE0A2A1F78}|PgFlServer\\PgFlServer.vcxproj|solutionrelative:PgFlServer\\PgFlServer.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "PgFlClient.cpp",
+              "DocumentMoniker": "D:\\OS25\\FileMapping\\WSpSysPagingFiles\\PgFlClient\\PgFlClient.cpp",
+              "RelativeDocumentMoniker": "PgFlClient\\PgFlClient.cpp",
+              "ToolTip": "D:\\OS25\\FileMapping\\WSpSysPagingFiles\\PgFlClient\\PgFlClient.cpp",
+              "RelativeToolTip": "PgFlClient\\PgFlClient.cpp",
+              "ViewState": "AgIAAF0AAAAAAAAAAADwv0oAAAA5AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-12-12T07:05:30.988Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "PgFlServer.cpp",
+              "DocumentMoniker": "D:\\OS25\\FileMapping\\WSpSysPagingFiles\\PgFlServer\\PgFlServer.cpp",
+              "RelativeDocumentMoniker": "PgFlServer\\PgFlServer.cpp",
+              "ToolTip": "D:\\OS25\\FileMapping\\WSpSysPagingFiles\\PgFlServer\\PgFlServer.cpp",
+              "RelativeToolTip": "PgFlServer\\PgFlServer.cpp",
+              "ViewState": "AgIAAGYAAAAAAAAAAADwvxQAAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-12-12T06:58:07.281Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
