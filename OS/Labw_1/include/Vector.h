@@ -96,7 +96,6 @@ namespace Algebra
             return Vector(result);
         }
 
-        // Переход в полярные координаты (для 2D)
         std::pair<long double, long double> toPolar() const
         {
             if (dimensions() != 2)
@@ -112,7 +111,6 @@ namespace Algebra
             return {r, theta};
         }
 
-        // Переход в сферические координаты (для 3D)
         std::tuple<long double, long double, long double> toSpherical() const
         {
             if (dimensions() != 3)
