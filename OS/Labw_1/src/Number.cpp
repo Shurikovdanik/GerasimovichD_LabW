@@ -194,7 +194,7 @@ namespace Number
 Number Number::operator+(const Number &other) const
 {
     Number temp = other;
-    temp.setFormat(this->_format);
+    temp.setFormat(this->_format); 
 
     auto toLongDouble = [](const Number &n) {
         long double m = static_cast<long double>(n._mantissa) / (1LL << 23);

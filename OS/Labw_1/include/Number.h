@@ -14,7 +14,7 @@ std::string to_string(T value)
     return oss.str();
 }
 
-namespace Number
+namespace Number 
 {
     enum systems
     {

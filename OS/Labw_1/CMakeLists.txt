@@ -18,7 +18,7 @@ if(NOT TARGET Vector)
         src/Vector.cpp
     )
     target_include_directories(Vector PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
-    target_link_libraries(Vector PRIVATE Num)
+    target_link_libraries(Vector PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}\\build\\Num.lib")
 endif()
 
 if(NOT TARGET testi)
@@ -28,7 +28,7 @@ if(NOT TARGET testi)
 
     target_include_directories(testi PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-    target_link_libraries(testi PRIVATE Num Vector)
+    target_link_libraries(testi PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}\\build\\Num.lib" "${CMAKE_CURRENT_SOURCE_DIR}\\build\\Vector.lib") #Тут .lib для win32, т.к. CMake передаёт эти пути в командную строку и именно в .lib лежит таблица символов (по dll просто fatal error LNK1107 будет)
 endif()
 set(GTEST_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/googletest-main/googletest/build")
 set(GTEST_INCLUDE_DIR "${GTEST_ROOT}/../googletest/include")
