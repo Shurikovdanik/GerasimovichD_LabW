@@ -1,6 +1,6 @@
 #include "../include/Matrix.h"
 #include "../include/Number.h"
-#include "../include/ThreadTunnel.h"
+#include "../include/BufferedChannel.h"
 #include <vector>
 #include <stdexcept>
 #include <iostream>
@@ -10,6 +10,8 @@
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/rotating_file_sink.h>
 #include <mutex>
+#include <atomic>
+
 
 using Num = float;
 Matrix::Matrix(Num **given, unsigned int dx, unsigned int dy)
@@ -86,18 +88,17 @@ Matrix Matrix::operator*(const Matrix &other) const {
     Matrix result(dx, other.dy);
     Matrix temp = other.transpond();
 
-    using Task = std::tuple<int,int>; 
+    using Task = std::tuple<int, int>;
     BufferedChannel<Task> channel(std::thread::hardware_concurrency() * 2);
     std::mutex result_mutex;
-    
-    // Create worker threads
+
     std::vector<std::thread> workers;
     for (int i = 0; i < std::thread::hardware_concurrency(); i++) {
         workers.emplace_back([&]() {
             while (true) {
                 auto [task, ok] = channel.Recv();
                 if (!ok) break;
-                
+
                 auto [ti, tj] = task;
                 int rowStart = ti * BLOCK_SIZE;
                 int colStart = tj * BLOCK_SIZE;
@@ -114,15 +115,13 @@ Matrix Matrix::operator*(const Matrix &other) const {
             }
         });
     }
-    
-    // Send tasks to the channel
+
     for (int ti = 0; ti < (dx + BLOCK_SIZE - 1) / BLOCK_SIZE; ++ti) {
         for (int tj = 0; tj < (other.dy + BLOCK_SIZE - 1) / BLOCK_SIZE; ++tj) {
             channel.Send(std::make_tuple(ti, tj));
         }
     }
-    
-    // Close the channel and wait for workers
+
     channel.Close();
     for (auto& worker : workers) {
         worker.join();
@@ -197,4 +196,48 @@ std::string Matrix::toString() const
         oss << "]\n";
     }
     return oss.str();
+}
+
+Matrix Matrix::multiplyWithoutChannel(const Matrix &other) const {
+    if (dy != other.dx) {
+        throw std::invalid_argument("Matrix dimensions do not match for multiplication");
+    }
+
+    Matrix result(dx, other.dy);
+    Matrix temp = other.transpond();
+
+    using Task = std::tuple<int,int>;
+    int tilesX = (dx + BLOCK_SIZE - 1) / BLOCK_SIZE;
+    int tilesY = (other.dy + BLOCK_SIZE - 1) / BLOCK_SIZE;
+    int totalTasks = tilesX * tilesY;
+    std::atomic<int> nextTask{0};
+    std::mutex result_mutex;
+
+    std::vector<std::thread> workers;
+    int workerCount = std::max(1u, std::thread::hardware_concurrency());
+    for (int w = 0; w < workerCount; ++w) {
+        workers.emplace_back([&]() {
+            while (true) {
+                int t = nextTask.fetch_add(1);
+                if (t >= totalTasks) break;
+                int ti = t / tilesY;
+                int tj = t % tilesY;
+                int rowStart = ti * BLOCK_SIZE;
+                int colStart = tj * BLOCK_SIZE;
+                for (int i = rowStart; i < std::min(rowStart + BLOCK_SIZE, dx); ++i) {
+                    for (int j = colStart; j < std::min(colStart + BLOCK_SIZE, other.dy); ++j) {
+                        Num sum = Num(0);
+                        for (int k = 0; k < dy; ++k) {
+                            sum = sum + this->numbers[i][k] * temp.numbers[j][k];
+                        }
+                        std::lock_guard<std::mutex> lock(result_mutex);
+                        result.numbers[i][j] += sum;
+                    }
+                }
+            }
+        });
+    }
+
+    for (auto &t : workers) t.join();
+    return result;
 }

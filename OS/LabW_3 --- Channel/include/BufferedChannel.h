@@ -6,24 +6,34 @@
 #include <condition_variable>
 #include <stdexcept>
 #include <utility>
+#include <string.h>
+#include "spdlog/spdlog.h"
+#include "../eventsystem/include/Event.h"
+#include "../eventsystem/include/EventListener.h"
 
-template<class T>
+template <typename T>
 class BufferedChannel {
 public:
-    explicit BufferedChannel(int size) : buffer_size_(size), closed_(false) {}
+    explicit BufferedChannel(int size)
+        : buffer_size_(size), closed_(false) {
+        send_event_ = new Event(1); 
+        recv_event_ = new Event(2); 
+        close_event_ = new Event(3); 
+    }
 
     void Send(T value) {
         std::unique_lock<std::mutex> lock(mutex_);
 
         cv_.wait(lock, [this]() {
             return closed_ || queue_.size() < buffer_size_;
-            });
+        });
 
         if (closed_) {
             throw std::runtime_error("Channel is closed");
         }
 
         queue_.push(std::move(value));
+        send_event_->emit(); 
         cv_.notify_all();
     }
 
@@ -32,30 +42,36 @@ public:
 
         cv_.wait(lock, [this]() {
             return closed_ || !queue_.empty();
-            });
+        });
 
         if (!queue_.empty()) {
             T value = std::move(queue_.front());
             queue_.pop();
+            recv_event_->emit(); 
             cv_.notify_all();
-            return { std::move(value), true };
+            return {std::move(value), true};
         }
 
-        return { T(), false };
+        return {T(), false};
     }
 
     void Close() {
         std::lock_guard<std::mutex> lock(mutex_);
         closed_ = true;
+        close_event_->emit(); 
         cv_.notify_all();
     }
 
 private:
     std::queue<T> queue_;
-    int buffer_size_;
+    const int buffer_size_;
     bool closed_;
     std::mutex mutex_;
     std::condition_variable cv_;
+
+    Event* send_event_;
+    Event* recv_event_;
+    Event* close_event_;
 };
 
-#endif
+#endif 

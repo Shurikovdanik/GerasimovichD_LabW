@@ -3,7 +3,7 @@
 #include <chrono>
 #include <thread>
 #include <vector>
-#include "ThreadTunnel.h"
+#include "BufferedChannel.h"
 #include "Matrix.h"
 
 constexpr auto TIMEOUT = std::chrono::milliseconds(200);
@@ -13,13 +13,11 @@ TEST(BufferedChannelTest, SendAndRecv) {
     std::string received;
     std::atomic<bool> done{false};
 
-    // Sender thread
     auto sender = std::thread([&]() {
         channel.Send("hello");
         done = true;
     });
 
-    // Receiver thread
     auto receiver = std::thread([&]() {
         auto [msg, ok] = channel.Recv();
         if (ok) {
@@ -89,16 +87,19 @@ TEST(BufferedChannelTest, SendAndRecvMatrix) {
 
     Matrix mat(2, 2);
     channel.Send(mat);
+
+    auto start = std::chrono::steady_clock::now();
+    while (!handled && std::chrono::steady_clock::now() - start < TIMEOUT) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
+
+    if (!handled) channel.Close(); 
+    receiver.join();
+
     EXPECT_TRUE(handled);
 }
 
-// === Тест на многопоточность ===
-
-TEST(ThreadTunnelTest, ThreadSafetyUnderParallelAccess) {
-    ThreadTunnel<int> tunnel;
-    std::atomic<int> counter{0};
-
-TEST(BufferedChannelTest, SendAndRecvMatrix) {
+TEST(BufferedChannelTest, SendAndRecvMatrixWithJoin) {
     BufferedChannel<Matrix> channel(10);
     std::atomic<bool> handled{false};
 
@@ -146,3 +147,36 @@ TEST(BufferedChannelTest, MultipleProducersConsumers) {
 
     EXPECT_EQ(counter.load(), 1000);
 }
+
+// === Тест на многопоточность === -- deprecated
+/** 
+TEST(ThreadTunnelTest, ThreadSafetyUnderParallelAccess) {
+    ThreadTunnel<int> tunnel;
+    std::atomic<int> counter{0};
+
+    // Start the ThreadTunnel with a handler for incrementing the counter
+    tunnel.start([&](int value) {
+        counter += value;
+    });
+
+    // Launch multiple producer threads
+    std::vector<std::thread> producers;
+    for (int i = 0; i < 10; ++i) {
+        producers.emplace_back([&]() {
+            for (int j = 0; j < 100; ++j) {
+                tunnel.send(1);
+            }
+        });
+    }
+
+    // Wait for all producers to finish
+    for (auto& t : producers) {
+        t.join();
+    }
+
+    // Stop the ThreadTunnel
+    tunnel.stop();
+
+    EXPECT_EQ(counter.load(), 1000);
+}
+    */

@@ -87,12 +87,10 @@ TEST(MatrixTest, Multiply1000x1000) {
 
     Matrix result = mA * mB;
 
-    // Проверка нескольких элементов
-    EXPECT_EQ(result[0][0], Num(2000)); // 1000 * 2
+    EXPECT_EQ(result[0][0], Num(2000)); 
     EXPECT_EQ(result[size - 1][size - 1], Num(2000));
     EXPECT_EQ(result[size / 2][size / 2], Num(2000));
 
-    // Очистка памяти
     for (int i = 0; i < size; ++i) {
         delete[] A[i];
         delete[] B[i];

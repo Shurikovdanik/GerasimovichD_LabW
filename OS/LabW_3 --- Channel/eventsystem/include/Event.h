@@ -10,16 +10,14 @@ private:
     int id;
     std::vector<EventListener *> _listeners;
 
-protected:
-    Event(int id)
-    {
-        this->id = id;
-    }
-
 public:
     /**
      * Объединяет вектора слушателей под одним событием, если их идентификаторы равны, иначе не меняет.
      */
+    Event(int id)
+    {
+        this->id = id;
+    }
     void unite(Event *other);
     int getID()
     {
