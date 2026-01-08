@@ -2,102 +2,93 @@
 #include <atomic>
 #include <chrono>
 #include <thread>
-#include "ThreadTunnelUnit.h"
+#include <vector>
 #include "ThreadTunnel.h"
 #include "Matrix.h"
 
 constexpr auto TIMEOUT = std::chrono::milliseconds(200);
 
-TEST(ThreadTunnelUnitTest, StartAndStopDoesNotCrash) {
-    ThreadTunnelUnit<std::string> tunnel;
-    tunnel.start([](const std::string&) {
-        // no-op
+TEST(BufferedChannelTest, SendAndRecv) {
+    BufferedChannel<std::string> channel(10);
+    std::string received;
+    std::atomic<bool> done{false};
+
+    // Sender thread
+    auto sender = std::thread([&]() {
+        channel.Send("hello");
+        done = true;
     });
-    tunnel.stop();
-    SUCCEED();
-}
 
-TEST(ThreadTunnelUnitTest, SendMessageIsHandled) {
-    ThreadTunnelUnit<std::string> tunnel;
-    std::atomic<bool> handled{false};
-
-    tunnel.start([&](const std::string& msg) {
-        if (msg == "hello") {
-            handled = true;
+    // Receiver thread
+    auto receiver = std::thread([&]() {
+        auto [msg, ok] = channel.Recv();
+        if (ok) {
+            received = msg;
         }
+        channel.Close();
     });
 
-    tunnel.send(std::make_tuple("hello"));
-
-    for (int i = 0; i < 10 && !handled; ++i) {
-        std::this_thread::sleep_for(TIMEOUT);
-    }
-
-    //tunnel.stop();
-    EXPECT_TRUE(handled);
+    sender.join();
+    receiver.join();
+    
+    EXPECT_EQ(received, "hello");
 }
 
-TEST(ThreadTunnelUnitTest, MultipleMessagesHandled) {
-    ThreadTunnelUnit<std::string> tunnel;
+TEST(BufferedChannelTest, MultipleMessages) {
+    BufferedChannel<std::string> channel(10);
     std::vector<std::string> received;
     std::mutex m;
 
-    tunnel.start([&](const std::string& msg) {
-        std::lock_guard<std::mutex> lock(m);
-        received.push_back(msg);
+    auto receiver = std::thread([&]() {
+        while (true) {
+            auto [msg, ok] = channel.Recv();
+            if (!ok) break;
+            {
+                std::lock_guard<std::mutex> lock(m);
+                received.push_back(msg);
+            }
+        }
     });
 
-    tunnel.send(std::make_tuple("one"));
-    tunnel.send(std::make_tuple("two"));
-    tunnel.send(std::make_tuple("three"));
+    channel.Send("one");
+    channel.Send("two");
+    channel.Send("three");
+    channel.Close();
 
-    std::this_thread::sleep_for(TIMEOUT);
-    tunnel.stop();
+    receiver.join();
 
     std::lock_guard<std::mutex> lock(m);
-    //EXPECT_EQ(received.size(), 3);
+    EXPECT_EQ(received.size(), 3);
     EXPECT_EQ(received[0], "one");
     EXPECT_EQ(received[1], "two");
     EXPECT_EQ(received[2], "three");
 }
 
-TEST(ThreadTunnelTest, AddThreadAndSendString) {
-    ThreadTunnel<std::string> tunnel;
-    std::string received;
-
-    tunnel.addThread("printer", [&](const std::string& msg) {
-        received = msg;
-    });
-
-    tunnel.sendDataByName("printer", "hello");
-    for (int i = 0; i < 3; ++i) { //lookout to default messages
-        std::this_thread::sleep_for(TIMEOUT);
-    }
-    std::this_thread::sleep_for(TIMEOUT);
-    EXPECT_EQ(received, "hello");
-}
-
-TEST(ThreadTunnelTest, SendToNonExistingThreadDoesNothing) {
-    ThreadTunnel<std::string> tunnel;
-    EXPECT_NO_THROW(tunnel.sendDataByName("ghost", "msg"));
+TEST(BufferedChannelTest, ClosedChannelThrows) {
+    BufferedChannel<std::string> channel(10);
+    channel.Close();
+    
+    EXPECT_THROW(channel.Send("msg"), std::runtime_error);
 }
 
 // === Тесты для Matrix ===
 
-TEST(ThreadTunnelTest, AddThreadAndSendMatrix) {
-    ThreadTunnel<Matrix> tunnel;
+TEST(BufferedChannelTest, SendAndRecvMatrix) {
+    BufferedChannel<Matrix> channel(10);
     std::atomic<bool> handled{false};
-    tunnel.addThread("matrixHandler", [&](const Matrix& m) { // Need to wait
-        EXPECT_EQ(m.getDX(), 2);
-        EXPECT_EQ(m.getDY(), 2);
-        handled = true;
+
+    auto receiver = std::thread([&]() {
+        auto [mat, ok] = channel.Recv();
+        if (ok) {
+            EXPECT_EQ(mat.getDX(), 2);
+            EXPECT_EQ(mat.getDY(), 2);
+            handled = true;
+        }
+        channel.Close();
     });
 
     Matrix mat(2, 2);
-    tunnel.sendDataByName("matrixHandler", mat);
-    for (int i = 0; i < 10 && !handled; ++i) {
-        std::this_thread::sleep_for(TIMEOUT);
-    }
+    channel.Send(mat);
     EXPECT_TRUE(handled);
 }
 
@@ -107,20 +98,51 @@ TEST(ThreadTunnelTest, ThreadSafetyUnderParallelAccess) {
     ThreadTunnel<int> tunnel;
     std::atomic<int> counter{0};
 
-    tunnel.addThread("counter", [&](const int& v) {
-        counter += v;
+TEST(BufferedChannelTest, SendAndRecvMatrix) {
+    BufferedChannel<Matrix> channel(10);
+    std::atomic<bool> handled{false};
+
+    auto receiver = std::thread([&]() {
+        auto [mat, ok] = channel.Recv();
+        if (ok) {
+            EXPECT_EQ(mat.getDX(), 2);
+            EXPECT_EQ(mat.getDY(), 2);
+            handled = true;
+        }
+        channel.Close();
     });
 
-    std::vector<std::thread> workers;
+    Matrix mat(2, 2);
+    channel.Send(mat);
+
+    receiver.join();
+    EXPECT_TRUE(handled);
+}
+
+TEST(BufferedChannelTest, MultipleProducersConsumers) {
+    BufferedChannel<int> channel(100);
+    std::atomic<int> counter{0};
+
+    auto consumer = std::thread([&]() {
+        while (true) {
+            auto [val, ok] = channel.Recv();
+            if (!ok) break;
+            counter += val;
+        }
+    });
+
+    std::vector<std::thread> producers;
     for (int i = 0; i < 10; ++i) {
-        workers.emplace_back([&] {
+        producers.emplace_back([&] {
             for (int j = 0; j < 100; ++j) {
-                tunnel.sendDataByName("counter", 1);
+                channel.Send(1);
             }
         });
     }
 
-    for (auto& t : workers) t.join();
+    for (auto& t : producers) t.join();
+    channel.Close();
+    consumer.join();
 
     EXPECT_EQ(counter.load(), 1000);
 }

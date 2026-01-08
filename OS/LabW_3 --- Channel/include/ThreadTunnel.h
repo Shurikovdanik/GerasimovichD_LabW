@@ -1,52 +1,68 @@
-#pragma once
-#include <map>
-#include <string>
-#include "ThreadTunnelUnit.h"
-#include <shared_mutex>
-#include <tuple>
-template <typename T>
-class ThreadTunnel
-{
+#ifndef BUFFERED_CHANNEL_H_
+#define BUFFERED_CHANNEL_H_
+
+#include <queue>
+#include <mutex>
+#include <condition_variable>
+#include <stdexcept>
+#include <utility>
+
+template<class T>
+class BufferedChannel {
 public:
-    void addThread(const std::string &name, std::function<void(const T &)> handler)
-    {
-        std::unique_lock lock(mutex_);
-        threads.try_emplace(name);
-        threads[name].start(std::move(handler));
-    }
-    void send(const T &msg)
-    {
-        std::shared_lock lock(mutex_);
-        int minQueue = -1;
-        std::string minName;
-        for (auto &[name, cur] : threads)
-        {
-            if (minQueue == -1 || cur.queueLength() < minQueue)
-            {
-                minQueue = cur.queueLength();
-                minName = name;
-                continue; 
-            }
-            if (minQueue > cur.queueLength()) {
-                minQueue = cur.queueLength();
-                minName = name;
-                continue; 
-            }
+    explicit BufferedChannel(int size) : buffer_size_(size), closed_(false) {}
+
+    void Send(T value) {
+        std::unique_lock<std::mutex> lock(mutex_);
+
+        cv_.wait(lock, [this]() {
+            return closed_ || queue_.size() < buffer_size_;
+            });
+
+        if (closed_) {
+            throw std::runtime_error("Channel is closed");
         }
-        sendDataByName(minName, msg);
+
+        queue_.push(std::move(value));
+        cv_.notify_all();
     }
-    void sendDataByName(const std::string &name, const T &msg)
-    {
-        std::shared_lock lock(mutex_);
-        auto it = threads.find(name);
-        if (it != threads.end())
-        {
-            it->second.send(std::make_tuple(msg));
+
+    std::pair<T, bool> Recv() {
+        std::unique_lock<std::mutex> lock(mutex_);
+
+        cv_.wait(lock, [this]() {
+            return closed_ || !queue_.empty();
+            });
+
+        if (!queue_.empty()) {
+            T value = std::move(queue_.front());
+            queue_.pop();
+            cv_.notify_all();
+            return { std::move(value), true };
         }
+
+        return { T(), false };
     }
-    ThreadTunnel() = default;
-    ThreadTunnel(const ThreadTunnel &) = delete;
-    ThreadTunnel &operator=(const ThreadTunnel &) = delete;
+
+    void Close() {
+        std::lock_guard<std::mutex> lock(mutex_);
+        closed_ = true;
+        cv_.notify_all();
+    }
+
+private:
+    std::queue<T> queue_;
+    int buffer_size_;
+    bool closed_;
+    std::mutex mutex_;
+    std::condition_variable cv_;
+};
+
+// Compatibility alias for existing code
+template<class T>
+using ThreadTunnel = BufferedChannel<T>;
+
+#endif // BUFFERED_CHANNEL_H_
 
 private:
     // Разрешено множественное чтение - но не запись

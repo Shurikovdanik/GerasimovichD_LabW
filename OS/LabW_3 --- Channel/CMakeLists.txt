@@ -29,7 +29,6 @@ FetchContent_MakeAvailable(spdlog googletest)
 add_subdirectory(eventsystem)
 if(NOT TARGET Tunnel)
     add_library(Tunnel OBJECT  
-        src/ThreadTunnelUnit.cpp
         src/Thread.cpp
     )
     target_link_libraries(Tunnel PRIVATE Num Events spdlog::spdlog)

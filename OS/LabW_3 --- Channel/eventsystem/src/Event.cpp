@@ -1,4 +1,4 @@
-#include "Event.h"
+#include "../include/Event.h"
 void Event::unite(Event *other)
 {
     if (this->id == other->getID())

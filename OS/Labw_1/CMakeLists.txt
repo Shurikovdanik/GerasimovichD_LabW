@@ -30,7 +30,7 @@ if(NOT TARGET testi)
 
     target_link_libraries(testi PRIVATE Num Vector)
 endif()
-set(GTEST_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/googletest/build")
+set(GTEST_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/googletest-main/googletest/build")
 set(GTEST_INCLUDE_DIR "${GTEST_ROOT}/../googletest/include")
 set(GTEST_LIBRARY "${GTEST_ROOT}/lib/Debug/gtestd.lib")
 set(GTEST_MAIN_LIBRARY "${GTEST_ROOT}/lib/Debug/gtest_maind.lib")
