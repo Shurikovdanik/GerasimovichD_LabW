@@ -1,16 +1,16 @@
 #include "../include/Matrix.h"
-#include "../include/Number.h"
 #include <vector>
 #include <stdexcept>
 #include <iostream>
 #define NOMINMAX
 #include <Windows.h>
 using Num = float;
+
 Matrix::Matrix(Num** given, unsigned int dx,unsigned int dy)
     : numbers(given)
 {
-    dx = dx;
-    dy = dy;
+    this->dx = dx;
+    this->dy = dy;
 }
 void Matrix::update(int dx, int dy) {
     this->dx = dx;
@@ -71,7 +71,7 @@ struct ThreadData {
     int nthreads;
 };
 
-DWORD WINAPI Matrix::worker(LPVOID param) {
+DWORD WINAPI worker(LPVOID param) {
     ThreadData* data = static_cast<ThreadData*>(param);
     const Matrix* A = data->A;
     const Matrix* B = data->B_transposed;
@@ -79,18 +79,34 @@ DWORD WINAPI Matrix::worker(LPVOID param) {
     int tid = data->tid;
     int nthreads = data->nthreads;
 
-    for (int ii = tid * BLOCK_SIZE; ii < A->dx; ii += nthreads * BLOCK_SIZE) {
-        for (int jj = 0; jj < B->dx; jj += BLOCK_SIZE) {
-            for (int kk = 0; kk < A->dy; kk += BLOCK_SIZE) {
-                for (int i = ii; i < std::min(ii + BLOCK_SIZE, A->dx); ++i) {
-                    for (int j = jj; j < std::min(jj + BLOCK_SIZE, B->dx); ++j) {
-                        Num sum = result->numbers[i][j];
-                        for (int k = kk; k < std::min(kk + BLOCK_SIZE, A->dy); ++k) {
-                            sum += A->numbers[i][k] * B->numbers[j][k];
-                        }
-                        result->numbers[i][j] = sum;
-                    }
+   
+    int tiles_rows = (A->dx + BLOCK_SIZE - 1) / BLOCK_SIZE;
+    int tiles_cols = (B->dx + BLOCK_SIZE - 1) / BLOCK_SIZE;
+    int total_tiles = tiles_rows * tiles_cols;
+    
+    
+    int tiles_per_thread = (total_tiles + nthreads - 1) / nthreads;
+    int start_tile = tid * tiles_per_thread;
+    int end_tile = std::min(start_tile + tiles_per_thread, total_tiles);
+
+    
+    for (int tile_idx = start_tile; tile_idx < end_tile; ++tile_idx) {
+        int ti = tile_idx / tiles_cols;  
+        int tj = tile_idx % tiles_cols;  
+
+        int row_start = ti * BLOCK_SIZE;
+        int row_end = std::min(row_start + BLOCK_SIZE, A->dx);
+        int col_start = tj * BLOCK_SIZE;
+        int col_end = std::min(col_start + BLOCK_SIZE, B->dx);
+
+        
+        for (int i = row_start; i < row_end; ++i) {
+            for (int j = col_start; j < col_end; ++j) {
+                Num sum = 0.0f;
+                for (int k = 0; k < A->dy; ++k) {
+                    sum += A->numbers[i][k] * B->numbers[j][k];
                 }
+                result->numbers[i][j] = sum;
             }
         }
     }
@@ -112,7 +128,7 @@ Matrix Matrix::operator*(const Matrix& other) const {
 
     for (unsigned t = 0; t < nthreads; ++t) {
         threadData[t] = { this, &temp, &result, static_cast<int>(t), static_cast<int>(nthreads) };
-        handles[t] = CreateThread(nullptr, 0, worker, &threadData[t], 0, nullptr);
+        handles[t] = CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)worker, &threadData[t], 0, nullptr);
     }
 
     WaitForMultipleObjects(nthreads, handles, TRUE, INFINITE);

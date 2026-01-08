@@ -2,7 +2,6 @@
 #include <thread>
 #define NOMINMAX
 #include <Windows.h>
-#include "Number.h"
 using Num = float; // Number::Number is slower by about 10 times
 const int BLOCK_SIZE = 32;
 class Matrix {
@@ -10,7 +9,7 @@ class Matrix {
     float** numbers;
     int dx, dy;
     Num getPartialMul(const Matrix& other, int i, int j) const;
-    Matrix::Matrix() 
+    Matrix() 
     : numbers(nullptr), dx(0), dy(0) {}
     protected:
     Num* getMulLines(const Matrix& other, int j) const;
@@ -19,9 +18,9 @@ class Matrix {
     static Num* arrrayMul(const Num* array, const Num* otherArray, int len);
     int getDX() {return dx;}
     int getDY() {return dy;}
-    Matrix::Matrix(float** given, int rows, int cols)
+    Matrix(float** given, int rows, int cols)
     : numbers(given), dx(rows), dy(cols) {}
-    static DWORD WINAPI worker(LPVOID param);
+    friend DWORD WINAPI worker(LPVOID param);
     Matrix(Num** given, unsigned int dx, unsigned int dy);
     Matrix(int dx, int dy);
     float* operator[] (int index) const {return numbers[index];}

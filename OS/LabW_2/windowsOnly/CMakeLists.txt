@@ -7,17 +7,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
-add_library(Num STATIC IMPORTED)
-
-set_target_properties(Num PROPERTIES
-    IMPORTED_LOCATION   "${CMAKE_CURRENT_SOURCE_DIR}/lib/Num.lib"   
-)
-
 if(NOT TARGET Matrix)
     add_library(Matrix STATIC 
         src/Matrix.cpp
     )
-    link_libraries(Num)
     target_include_directories(Matrix PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 endif()
 
@@ -26,7 +19,7 @@ if(NOT TARGET testi)
     add_executable(testi
         test/main.cpp
     )
-    target_link_libraries(testi PRIVATE Num Matrix)
+    target_link_libraries(testi PRIVATE Matrix)
     target_include_directories(testi PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 endif()
@@ -38,7 +31,7 @@ enable_testing()
 add_subdirectory(${GTEST_ROOT}/..)
 
 add_executable(tests tests/Matrix_test.cpp)
-target_link_libraries(tests PRIVATE Num Matrix gtest gtest_main)
+target_link_libraries(tests PRIVATE Matrix gtest gtest_main)
 
 include(GoogleTest)
 gtest_discover_tests(tests)
