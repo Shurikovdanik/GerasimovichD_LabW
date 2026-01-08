@@ -145,7 +145,7 @@ TEST (MatrixTestCompare, Matrix_Multithread){
 
     Matrix mA(A, size, size);
     Matrix mB(B, size, size);
-    Matrix result = mA * mB;
+    Matrix result = mA.multiplyWithoutChannel(mB);
     // Проверка нескольких элементов
     EXPECT_EQ(result[0][0], Num(2000)); // 1000 * 2
     EXPECT_EQ(result[size - 1][size - 1], Num(2000));
