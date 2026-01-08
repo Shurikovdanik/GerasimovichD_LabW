@@ -5,7 +5,7 @@
 #define NOMINMAX
 #include <Windows.h>
 using Num = float;
-
+CRITICAL_SECTION CS;
 Matrix::Matrix(Num** given, unsigned int dx,unsigned int dy)
     : numbers(given)
 {
@@ -71,7 +71,10 @@ struct ThreadData {
     int nthreads;
 };
 
+
+
 DWORD WINAPI worker(LPVOID param) {
+    
     ThreadData* data = static_cast<ThreadData*>(param);
     const Matrix* A = data->A;
     const Matrix* B = data->B_transposed;
@@ -79,34 +82,33 @@ DWORD WINAPI worker(LPVOID param) {
     int tid = data->tid;
     int nthreads = data->nthreads;
 
-   
     int tiles_rows = (A->dx + BLOCK_SIZE - 1) / BLOCK_SIZE;
     int tiles_cols = (B->dx + BLOCK_SIZE - 1) / BLOCK_SIZE;
     int total_tiles = tiles_rows * tiles_cols;
-    
-    
+
     int tiles_per_thread = (total_tiles + nthreads - 1) / nthreads;
     int start_tile = tid * tiles_per_thread;
     int end_tile = std::min(start_tile + tiles_per_thread, total_tiles);
 
-    
     for (int tile_idx = start_tile; tile_idx < end_tile; ++tile_idx) {
-        int ti = tile_idx / tiles_cols;  
-        int tj = tile_idx % tiles_cols;  
+        int ti = tile_idx / tiles_cols;
+        int tj = tile_idx % tiles_cols;
 
         int row_start = ti * BLOCK_SIZE;
         int row_end = std::min(row_start + BLOCK_SIZE, A->dx);
         int col_start = tj * BLOCK_SIZE;
         int col_end = std::min(col_start + BLOCK_SIZE, B->dx);
 
-        
         for (int i = row_start; i < row_end; ++i) {
             for (int j = col_start; j < col_end; ++j) {
                 Num sum = 0.0f;
                 for (int k = 0; k < A->dy; ++k) {
                     sum += A->numbers[i][k] * B->numbers[j][k];
                 }
+
+                EnterCriticalSection(&CS);
                 result->numbers[i][j] = sum;
+                LeaveCriticalSection(&CS);
             }
         }
     }
@@ -114,17 +116,18 @@ DWORD WINAPI worker(LPVOID param) {
     return 0;
 }
 
+
 Matrix Matrix::operator*(const Matrix& other) const {
     if (dy != other.dx) {
         throw std::invalid_argument("Matrix dimensions do not match for multiplication");
     }
-
     Matrix result(dx, other.dy);
     Matrix temp = other.transpond();
 
     unsigned nthreads = std::thread::hardware_concurrency();
     HANDLE* handles = new HANDLE[nthreads];
     ThreadData* threadData = new ThreadData[nthreads];
+    InitializeCriticalSection(&CS);
 
     for (unsigned t = 0; t < nthreads; ++t) {
         threadData[t] = { this, &temp, &result, static_cast<int>(t), static_cast<int>(nthreads) };
@@ -136,6 +139,7 @@ Matrix Matrix::operator*(const Matrix& other) const {
     for (unsigned t = 0; t < nthreads; ++t) {
         CloseHandle(handles[t]);
     }
+    DeleteCriticalSection(&CS);
 
     delete[] handles;
     delete[] threadData;

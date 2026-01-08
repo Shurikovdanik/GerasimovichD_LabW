@@ -6,6 +6,7 @@ using Num = float; // Number::Number is slower by about 10 times
 const int BLOCK_SIZE = 32;
 class Matrix {
     private:
+    
     float** numbers;
     int dx, dy;
     Num getPartialMul(const Matrix& other, int i, int j) const;
