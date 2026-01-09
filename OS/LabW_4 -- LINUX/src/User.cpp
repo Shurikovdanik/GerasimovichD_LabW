@@ -33,7 +33,7 @@ int main() {
 
     runKiller({"--name", "WINWORD.EXE"});
     runKiller({"--id", "1234"});
-    runKiller({});  // без аргументов
+    runKiller({}); 
 
     unsetenv("PROC_TO_KILL");
 
