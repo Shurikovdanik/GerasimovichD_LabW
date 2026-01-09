@@ -2,12 +2,10 @@
 #include <string>
 #include <vector>
 #include <cstdlib>
-#include <cstring>
-#include <sys/types.h>
-#include <signal.h>
+#include <csignal>
 #include <dirent.h>
 #include <fstream>
-#include <sstream>
+#include <unistd.h>
 
 // Завершение процесса по PID
 bool killById(pid_t pid)
@@ -15,7 +13,7 @@ bool killById(pid_t pid)
     return (kill(pid, SIGKILL) == 0);
 }
 
-// Получение PID процесса по имени
+// Получение PID процесса по имени через /proc
 std::vector<pid_t> getPidsByName(const std::string &name)
 {
     std::vector<pid_t> pids;
@@ -36,7 +34,7 @@ std::vector<pid_t> getPidsByName(const std::string &name)
         pid_t pid = std::stoi(dirName);
         std::string path = "/proc/" + dirName + "/comm";
         std::ifstream commFile(path);
-        
+
         if (commFile)
         {
             std::string procName;
@@ -56,7 +54,7 @@ bool killByName(const std::string &name)
 {
     bool killed = false;
     std::vector<pid_t> pids = getPidsByName(name);
-    
+
     for (pid_t pid : pids)
     {
         if (killById(pid))
@@ -65,15 +63,45 @@ bool killByName(const std::string &name)
             killed = true;
         }
     }
-    
     return killed;
+}
+
+
+bool startProcess(const std::string &path, const std::vector<std::string> &args = {})
+{
+    pid_t pid = fork();
+    if (pid == -1)
+    {
+        perror("fork");
+        return false;
+    }
+    else if (pid == 0)
+    {
+        // Дочерний процесс
+        std::vector<char*> argv;
+        argv.push_back(const_cast<char*>(path.c_str()));
+        for (const auto &arg : args)
+            argv.push_back(const_cast<char*>(arg.c_str()));
+        argv.push_back(nullptr);
+
+        execvp(path.c_str(), argv.data());
+        perror("execvp");
+        exit(EXIT_FAILURE);
+    }
+    else
+    {
+        // Родительский процесс
+        std::cout << "Started process " << path << " with PID " << pid << "\n";
+        return true;
+    }
 }
 
 int main(int argc, char *argv[])
 {
     if (argc < 2)
     {
-        std::cout << "Usage: Killer --id <pid> | --name <procname>\n";
+        std::cout << "Usage: Killer --id <pid> | --name <procname> | --start <path> [args...]\n";
+        return 1;
     }
 
     for (int i = 1; i < argc; i++)
@@ -95,23 +123,14 @@ int main(int argc, char *argv[])
             else
                 std::cout << "No processes with name " << name << "\n";
         }
-    }
-
-    char *env = getenv("PROC_TO_KILL");
-    if (env)
-    {
-        std::string envStr(env);
-        std::cout << "PROC_TO_KILL=" << envStr << "\n";
-        size_t start = 0, end;
-        while ((end = envStr.find(',', start)) != std::string::npos)
+        else if (arg == "--start" && i + 1 < argc)
         {
-            std::string proc = envStr.substr(start, end - start);
-            killByName(proc);
-            start = end + 1;
+            std::string path = argv[++i];
+            std::vector<std::string> args;
+            while (i + 1 < argc)
+                args.push_back(argv[++i]);
+            startProcess(path, args);
         }
-        std::string last = envStr.substr(start);
-        if (!last.empty())
-            killByName(last);
     }
 
     return 0;
